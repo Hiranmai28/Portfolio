@@ -17,7 +17,7 @@ export default function Portfolio() {
 
   useEffect(() => {
     // Generate particles
-    const newParticles = Array.from({ length: 50 }, (_, i) => ({
+    const newParticles = Array.from({ length: 30 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
@@ -218,14 +218,14 @@ export default function Portfolio() {
         <div className="max-w-6xl mx-auto text-center">
           <div className="mb-8 animate-fade-in">
             <h1 className="text-6xl md:text-8xl font-bold mb-6">
-              Hi! I'm Hiranmai Devarasetty.
+              Hi! I'm Hiranmai!.
             </h1>
             <h2 className="text-3xl md:text-5xl text-cyan-400 mb-8">
-              Data Enthusiast
+              A Data & AI Specialist
             </h2>
             <p className="text-2xl md:text-3xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
               Transforming complex data into actionable insights through advanced analytics, 
-              machine learning, and interactive visualizations
+              AI, and interactive visualizations.
             </p>
           </div>
           
@@ -259,9 +259,8 @@ export default function Portfolio() {
           <h2 className="text-5xl font-bold mb-12 text-center">About Me</h2>
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-10 shadow-xl">
             <p className="text-2xl text-gray-300 mb-8 leading-relaxed">
-              I'm a Data Analyst with expertise in building and optimizing ETL pipelines and interactive 
-              dashboards using SQL, Python, Tableau, and Power BI. Currently pursuing my Master's in Data 
-              Science at Northeastern University with a 3.8 GPA.
+            I'm a Data Professional specializing in data analytics, machine learning, and AI. With expertise in building ETL pipelines, interactive 
+            dashboards, and ML models using SQL, Python, Tableau, and Power BI, I'm currently pursuing my Master's in Data Science at Northeastern University.
             </p>
             <p className="text-2xl text-gray-300 mb-8 leading-relaxed">
               With experience at AstraZeneca and several research positions, I specialize in translating 
