@@ -86,11 +86,31 @@ export default function Portfolio() {
     },
     {
       title: " Fine-Tuning LLAMA 2 with Custom Dataset Using LoRA and QLoRA ",
-      description: "Fine-tuned LLAMA 2 model using LoRA and QLoRA techniques on custom domain-specific datasets to optimize performance for specialized tasks",
+      description: "LLAMA 2 model using LoRA and QLoRA techniques on custom domain-specific datasets to optimize performance for specialized tasks",
       tech: ["Python", "Prefect", "FAISS", "Mistral LLM", "LangChain", "GCP", "Docker"],
       highlights: [
           "Fine-tuned large language models by leveraging domain-specific data, Enhanced retrieval-augmented generation (RAG) applications for knowledge-intensive tasks, improving response quality by 30",
           "Trained domain-specific LLMs on robotic perception data, improved object recognition efficiency in warehouse environments"
+      ]
+    },
+    {
+      title: "SavorSync – Culturally Personalized Healthy Recipe Platform",
+      description: "Full-stack web app providing culturally personalized healthy recipes using AI-powered chatbot and user insights",
+      tech: ["Python", "GPT-3.5", "Tableau", "RAG", "Full-Stack Development"],
+      highlights: [
+        "Conducted user research with 50+ participants and created Tableau dashboards to visualize dietary patterns and preferences",
+        "Built AI-powered chatbot using GPT-3.5 for multilingual recipe recommendations and ingredient adaptations",
+        "Implemented RAG workflows for contextual recipe generation based on cultural and dietary requirements"
+      ]
+    },
+    {
+      title: "Multiple Disease Prediction using Machine Learning",
+      description: "Real-time health risk prediction tool using machine learning models to classify multiple diseases",
+      tech: ["Python", "Machine Learning", "Streamlit", "Scikit-learn", "EDA"],
+      highlights: [
+        "Performed exploratory data analysis on medical datasets to extract patterns and optimize feature selection for risk classification",
+        "Built and evaluated multiple ML models using accuracy and F1 score metrics, tuning performance for real-world health applications",
+        "Deployed an interactive real-time risk prediction tool using Streamlit with focus on responsiveness and user-friendly interface"
       ]
     },
     {
@@ -106,12 +126,12 @@ export default function Portfolio() {
   ];
 
   const skills = {
-    "Data Engineering": ["ETL/ELT pipelines", "Snowflake", "Alteryx", "Database Architecture"],
+    "Data Engineering": ["ETL/ELT Pipelines", "Snowflake", "Databricks", "Alteryx", "Database Architecture", "Data Modeling"],
     "Programming": ["Python", "SQL", "R", "JavaScript", "C++"],
-    "Data Analysis": ["Statistical Testing", "Regression Analysis", "Pandas", "NumPy", "Scikit-learn"],
-    "Visualization": ["Power BI", "Tableau", "Seaborn", "Matplotlib", "Looker"],
-    "Machine Learning": ["Classification Models", "Predictive Analytics", "Supervised & Unsupervised Learning", "Transformers", "Agentic AI"],
-    "Cloud & DevOps": ["GCP", "Azure", "AWS", "Docker", "CI/CD"]
+    "Data Analysis": ["Statistical Testing", "Regression Analysis", "Pandas", "NumPy", "Scikit-learn", "Excel"],
+    "Visualization & BI": ["Power BI", "Tableau", "Looker", "Seaborn", "Matplotlib", "Plotly"],
+    "Machine Learning & AI": ["Supervised & Unsupervised Learning", "Classification Models", "Predictive Analytics", "NLP", "RAG", "Transformers"],
+    "Cloud & DevOps": ["GCP", "Azure", "AWS", "Docker", "CI/CD", "GitHub Actions"]
   };
 
   return (
@@ -218,7 +238,7 @@ export default function Portfolio() {
         <div className="max-w-6xl mx-auto text-center">
           <div className="mb-8 animate-fade-in">
             <h1 className="text-6xl md:text-8xl font-bold mb-6">
-              Hi! I'm Hiranmai!.
+              Hi! I'm Hiranmai.
             </h1>
             <h2 className="text-3xl md:text-5xl text-cyan-400 mb-8">
               A Data & AI Specialist
@@ -275,7 +295,7 @@ export default function Portfolio() {
                   <div>
                     <p className="font-semibold text-xl">Master's in Data Science</p>
                     <p className="text-gray-400 text-xl">Northeastern University</p>
-                    <p className="text-lg text-gray-500">GPA: 3.8/4.0 | Jan 2024 - Present</p>
+                    <p className="text-lg text-gray-500">GPA: 3.8/4.0 | Jan 2024 - April 2026</p>
                   </div>
                   <div>
                     <p className="font-semibold text-xl">B.Tech, Electronics & Computer Engineering</p>
@@ -286,12 +306,14 @@ export default function Portfolio() {
               </div>
               
               <div>
-                <h3 className="text-3xl font-semibold text-cyan-400 mb-6">Certifications</h3>
+                <h3 className="text-3xl font-semibold text-cyan-400 mb-6">Certifications & Publications</h3>
                 <ul className="space-y-3 text-gray-300 text-xl">
                   <li>• Snowflake Data Warehousing Badge</li>
-                  <li>• AstraZeneca Thriving in AI Programme 2025</li>
+                  <li>• AstraZeneca Thriving in AI Programme 2025 - Platinum</li>
                   <li>• Alteryx Machine Learning Micro-Credential</li>
                   <li>• AICTE AWS Data Analytics Internship</li>
+                  <li>• Oracle Cloud Infrastructure 2024 Generative AI Professional Certified</li>
+                  <li>• Research paper publication on 'Autism Spectrum Disorder Detection using Deep Learning', IJNRD</li>
                 </ul>
               </div>
             </div>
