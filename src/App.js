@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, Phone, MapPin, ExternalLink, ChevronDown, Menu, X } from 'lucide-react';
+import { Github, Linkedin, Mail, Phone, MapPin, ChevronDown, Menu, X } from 'lucide-react';
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('home');
@@ -173,7 +173,7 @@ export default function Portfolio() {
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/95 backdrop-blur-sm shadow-lg' : 'bg-transparent'}`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            HD
+            Hiranmai Devarasetty
           </h1>
           
           {/* Desktop Menu */}
