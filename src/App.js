@@ -571,7 +571,7 @@ export default function Portfolio() {
 
       {/* Footer */}
       <footer className="bg-slate-900 border-t border-slate-700/50 py-6 text-center text-gray-500 text-sm relative z-10">
-        <p>© 2026 <span className="gradient-text font-semibold">Hiranmai Devarasetty</span>. The best data story is the one we haven't told yet — let's write it together.</p>
+        <p>© 2026 <span className="gradient-text font-semibold">Hiranmai Devarasetty</span>. The best data story is the one we haven't told yet. Let's write it together.</p>
       </footer>
 
       {/* ── Prezi Zoom Overlay ──────────────────────────────────────────────── */}
