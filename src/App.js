@@ -105,43 +105,28 @@ export default function Portfolio() {
       title: 'Data Analyst Co-op & Program Coordinator',
       org: 'AstraZeneca, Alexion Pharmaceuticals',
       location: 'Boston, MA',
-      period: 'Jul 2025 – Dec 2025',
-      highlights: [
-        'Developed 10+ Power BI dashboards with optimized DAX calculations, reducing report load times by 60%',
-        'Designed automated ETL pipelines using Alteryx and Python, reducing data errors by 75%',
-        'Built Agentic AI solutions to automate onboarding workflows, accelerating task delivery by 50%',
-      ],
+      period: 'Jul 2025 - Dec 2025',
     },
     {
       type: 'work',
       title: 'Team Lead & Talent Acquisition Specialist',
       org: 'Saxbys Cafe, Northeastern University',
       location: 'Boston, MA',
-      period: 'Aug 2024 – May 2026',
-      highlights: [
-        'Led a team of 10+ cafe associates, managing scheduling, training, and daily operations',
-        'Spearheaded end-to-end talent acquisition — sourcing, interviewing, and onboarding new team members',
-        'Implemented operational improvements that measurably increased team efficiency and customer satisfaction',
-      ],
+      period: 'Aug 2024 - May 2026',
     },
     {
       type: 'work',
       title: 'Graduate Research & Teaching Assistant',
       org: 'Northeastern University',
       location: 'Boston, MA',
-      period: 'Aug 2024 – Apr 2025',
-      highlights: [
-        'Guided students through applied data analysis using Python, R, and statistical modeling techniques',
-        'Analyzed user behavior through quantitative experiments, contributing to behavioral modeling research',
-        'Increased student engagement by 50% through interactive workshops and real-world case studies',
-      ],
+      period: 'Aug 2024 - Apr 2025',
     },
     {
       type: 'education',
       title: "Master's in Data Science",
       org: 'Northeastern University',
       location: 'Boston, MA',
-      period: 'Jan 2024 – May 2026',
+      period: 'Jan 2024 - May 2026',
       detail: 'GPA: 3.8 / 4.0',
     },
     {
@@ -149,26 +134,21 @@ export default function Portfolio() {
       title: 'Data Scientist Intern',
       org: 'Turingminds.ai',
       location: 'Hyderabad, IN',
-      period: 'Aug 2022 – Jun 2023',
-      highlights: [
-        'Cleaned and schema-validated multilingual health datasets; performed EDA using Python and R',
-        'Guided feature selection and model development for NLP-based classification tasks',
-        'Built interactive dashboards in Tableau and Looker for cross-functional stakeholders',
-      ],
+      period: 'Aug 2022 - Jun 2023',
     },
     {
       type: 'education',
       title: 'B.Tech, Electronics & Computer Engineering',
       org: 'Sreenidhi Institute of Technology',
       location: 'Hyderabad, IN',
-      period: 'Jul 2019 – Jul 2023',
+      period: 'Jul 2019 - Jul 2023',
       detail: 'GPA: 4.0 / 4.0',
     },
   ];
 
   const projects = [
     {
-      title: 'NUBOT – Northeastern University',
+      title: 'NUBOT - Northeastern University',
       description: 'End-to-end ETL pipeline with semantic search capabilities using RAG workflows',
       tech: ['Python', 'Prefect', 'FAISS', 'Mistral LLM', 'LangChain', 'GCP', 'Docker'],
       highlights: [
@@ -187,7 +167,7 @@ export default function Portfolio() {
       ],
     },
     {
-      title: 'SavorSync – AI Recipe Platform',
+      title: 'SavorSync - AI Recipe Platform',
       description: 'Full-stack platform providing culturally personalized healthy recipes using an AI-powered chatbot',
       tech: ['Python', 'GPT-3.5', 'Tableau', 'RAG', 'Full-Stack Development'],
       highlights: [
@@ -269,69 +249,76 @@ export default function Portfolio() {
         <p>
           I'm a data-driven problem solver who turns raw, messy information into decisions that matter. Currently completing my
           <span className="text-cyan-400 font-semibold"> Master's in Data Science at Northeastern University</span> (GPA: 3.8),
-          I bring hands-on experience across the full data stack — from architecting ETL pipelines and building ML models to
+          I bring hands-on experience across the full data stack, from architecting ETL pipelines and building ML models to
           designing executive dashboards and deploying AI-powered applications.
         </p>
         <p>
           At <span className="text-violet-400 font-semibold">AstraZeneca / Alexion Pharmaceuticals</span>, I reduced report load times
           by 60%, cut data pipeline errors by 75%, and shipped Agentic AI solutions that cut manual onboarding work in half.
-          My background spans pharma analytics, academic research, LLM fine-tuning, and cross-functional stakeholder communication —
+          My background spans pharma analytics, academic research, LLM fine-tuning, and cross-functional stakeholder communication,
           so I'm equally comfortable in the weeds of a SQL query and in the boardroom presenting findings.
         </p>
         <p>
-          What sets me apart: I don't just <em>analyze</em> data — I <em>engineer systems around it</em>. Whether it's fine-tuning
+          What sets me apart: I don't just <em>analyze</em> data. I <em>engineer systems around it</em>. Whether it's fine-tuning
           LLMs with LoRA, building RAG pipelines from scratch, or creating Power BI dashboards that executives actually use, I show
           up with curiosity, precision, and a bias for measurable impact.
         </p>
         <p>
-          Outside of data, I'm a people-first leader — I've led teams, hired talent, and mentored students, which means I bring
+          Outside of data, I'm a people-first leader. I've led teams, hired talent, and mentored students, which means I bring
           both technical depth and the communication skills to translate it for any audience.
         </p>
       </div>
     </div>
   );
 
-  const renderCareer = () => (
-    <div className="max-w-3xl mx-auto px-6 py-16">
-      <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Career <span className="gradient-text">Path</span></h2>
-      <p className="text-gray-400 mb-12">Education and experience — one continuous story.</p>
-      <div className="relative">
-        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-500/80 via-violet-500/50 to-transparent"></div>
-        <div className="space-y-10">
-          {careerPath.map((item, i) => (
-            <div key={i} className="relative pl-16">
-              <div className={`absolute left-0 top-2 w-12 h-12 rounded-full flex items-center justify-center border-2 ${item.type === 'education' ? 'border-violet-400 bg-slate-900' : 'border-cyan-400 bg-slate-900'}`}>
-                {item.type === 'education'
-                  ? <BookOpen size={18} className="text-violet-400" />
-                  : <Briefcase size={18} className="text-cyan-400" />}
-              </div>
-              <div className={`rounded-xl p-6 border ${item.type === 'education' ? 'bg-violet-900/20 border-violet-700/40' : 'bg-slate-800/50 border-slate-700/40'}`}>
-                <span className={`text-xs font-bold tracking-widest uppercase ${item.type === 'education' ? 'text-violet-400' : 'text-cyan-400'}`}>{item.period}</span>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${item.type === 'education' ? 'bg-violet-500/20 text-violet-300' : 'bg-cyan-500/20 text-cyan-300'}`}>
-                    {item.type === 'education' ? 'Education' : 'Work'}
-                  </span>
-                </div>
-                <h4 className="text-xl font-bold text-white mt-2">{item.title}</h4>
-                <p className="text-gray-400 text-sm mt-0.5">{item.org} · {item.location}</p>
-                {item.detail && <p className="text-gray-500 text-sm mt-1">{item.detail}</p>}
-                {item.highlights && (
-                  <ul className="mt-4 space-y-2 text-gray-300 text-sm">
-                    {item.highlights.map((h, j) => (
-                      <li key={j} className="flex items-start gap-2">
-                        <span className="text-cyan-400 flex-shrink-0 mt-0.5">▹</span>
-                        <span>{h}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-          ))}
+  const renderCareer = () => {
+    const eduItems  = careerPath.filter(i => i.type === 'education');
+    const workItems = careerPath.filter(i => i.type === 'work');
+    const TimelineItem = ({ item, color }) => (
+      <div className="relative pl-12 mb-8">
+        <div className={`absolute left-0 top-1 w-9 h-9 rounded-full flex items-center justify-center border-2 bg-slate-900 ${color === 'violet' ? 'border-violet-400' : 'border-cyan-400'}`}>
+          {color === 'violet'
+            ? <BookOpen size={15} className="text-violet-400" />
+            : <Briefcase size={15} className="text-cyan-400" />}
+        </div>
+        <div className={`rounded-xl p-5 border ${color === 'violet' ? 'bg-violet-900/20 border-violet-700/40' : 'bg-slate-800/50 border-slate-700/40'}`}>
+          <span className={`text-xs font-bold tracking-widest uppercase ${color === 'violet' ? 'text-violet-400' : 'text-cyan-400'}`}>{item.period}</span>
+          <h4 className="text-base font-bold text-white mt-1">{item.title}</h4>
+          <p className="text-gray-400 text-sm mt-0.5">{item.org}</p>
+          <p className="text-gray-500 text-xs mt-0.5">{item.location}</p>
+          {item.detail && <p className="text-gray-500 text-xs mt-1">{item.detail}</p>}
         </div>
       </div>
-    </div>
-  );
+    );
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-16">
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Career <span className="gradient-text">Path</span></h2>
+        <p className="text-gray-400 mb-12">Education on the left, experience on the right.</p>
+        <div className="grid md:grid-cols-2 gap-10">
+          {/* Education column */}
+          <div>
+            <h3 className="text-lg font-bold text-violet-400 uppercase tracking-widest mb-8 flex items-center gap-2">
+              <BookOpen size={18} /> Education
+            </h3>
+            <div className="relative">
+              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-violet-500/70 to-transparent"></div>
+              {eduItems.map((item, i) => <TimelineItem key={i} item={item} color="violet" />)}
+            </div>
+          </div>
+          {/* Work column */}
+          <div>
+            <h3 className="text-lg font-bold text-cyan-400 uppercase tracking-widest mb-8 flex items-center gap-2">
+              <Briefcase size={18} /> Experience
+            </h3>
+            <div className="relative">
+              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-500/70 to-transparent"></div>
+              {workItems.map((item, i) => <TimelineItem key={i} item={item} color="cyan" />)}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderProjects = () => (
     <div className="max-w-5xl mx-auto px-6 py-16">
@@ -364,7 +351,7 @@ export default function Portfolio() {
   const renderSkills = () => (
     <div className="max-w-5xl mx-auto px-6 py-16">
       <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Skills & <span className="gradient-text">Expertise</span></h2>
-      <p className="text-gray-400 mb-12">My technical toolkit — built across industry, research, and personal projects.</p>
+      <p className="text-gray-400 mb-12">My technical toolkit, built across industry, research, and personal projects.</p>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.entries(skills).map(([cat, data], i) => (
           <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl border border-slate-700/40 flex flex-col">
@@ -421,9 +408,9 @@ export default function Portfolio() {
       </p>
       <div className="grid md:grid-cols-3 gap-6 mb-12">
         {[
-          { icon: <Mail className="mx-auto mb-3 text-cyan-400" size={36} />, label: 'Email', content: <a href="mailto:devarasetty.h@northeastern.edu" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors break-all">devarasetty.h@northeastern.edu</a> },
+          { icon: <Mail className="mx-auto mb-3 text-cyan-400" size={36} />, label: 'Email', content: <a href="mailto:hiranmaid05@gmail.com" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors break-all">hiranmaid05@gmail.com</a> },
           { icon: <Phone className="mx-auto mb-3 text-violet-400" size={36} />, label: 'Phone', content: <a href="tel:+18573435158" className="text-gray-400 hover:text-violet-400 text-sm transition-colors">+1 857-343-5158</a> },
-          { icon: <MapPin className="mx-auto mb-3 text-fuchsia-400" size={36} />, label: 'Location', content: <p className="text-gray-400 text-sm">Boston, MA</p> },
+          { icon: <MapPin className="mx-auto mb-3 text-fuchsia-400" size={36} />, label: 'Location', content: <p className="text-gray-400 text-sm">Boston, MA<br />Open to Relocation</p> },
         ].map((item, i) => (
           <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/40 shadow-xl">
             {item.icon}
@@ -530,7 +517,7 @@ export default function Portfolio() {
           <div className="flex justify-center space-x-5 mb-12">
             <a href="https://www.linkedin.com/in/hiranmaidev/" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/70 hover:bg-cyan-500 border border-slate-700 hover:border-cyan-500 rounded-full transition-all hover:scale-110"><Linkedin size={24} /></a>
             <a href="https://github.com/Hiranmai28" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/70 hover:bg-violet-600 border border-slate-700 hover:border-violet-500 rounded-full transition-all hover:scale-110"><Github size={24} /></a>
-            <a href="mailto:devarasetty.h@northeastern.edu" className="p-3 bg-slate-800/70 hover:bg-cyan-500 border border-slate-700 hover:border-cyan-500 rounded-full transition-all hover:scale-110"><Mail size={24} /></a>
+            <a href="mailto:hiranmaid05@gmail.com" className="p-3 bg-slate-800/70 hover:bg-cyan-500 border border-slate-700 hover:border-cyan-500 rounded-full transition-all hover:scale-110"><Mail size={24} /></a>
           </div>
           <button onClick={() => { const el = document.getElementById('numbers'); el && el.scrollIntoView({ behavior: 'smooth' }); }} className="animate-bounce">
             <ChevronDown size={36} className="text-cyan-400" />
