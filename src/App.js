@@ -220,14 +220,14 @@ export default function Portfolio() {
   const impactStats = [
     { value: '3+', label: 'Years Experience' },
     { value: '10+', label: 'Projects Built' },
-    { value: '6', label: 'Certifications' },
+    { value: '6+', label: 'Certifications' },
     { value: '3.8', label: 'GPA' },
   ];
 
   const counterCards = [
     { key: 'projects',      label: 'Projects Built',  suffix: '+', fmt: v => v },
     { key: 'technologies',  label: 'Technologies',    suffix: '+', fmt: v => v },
-    { key: 'certifications',label: 'Certifications',  suffix: '',  fmt: v => v },
+    { key: 'certifications',label: 'Certifications',  suffix: '+', fmt: v => v },
     { key: 'gpa',           label: 'GPA',             suffix: '',  fmt: v => (v / 10).toFixed(1) },
   ];
 
