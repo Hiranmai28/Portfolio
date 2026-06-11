@@ -276,16 +276,23 @@ export default function Portfolio() {
             <div className="grid md:grid-cols-2 gap-8 mt-10">
               <div>
                 <h3 className="text-3xl font-semibold text-cyan-400 mb-6">Education</h3>
-                <div className="space-y-6">
-                  <div>
-                    <p className="font-semibold text-xl">Master's in Data Science</p>
-                    <p className="text-gray-400 text-xl">Northeastern University</p>
-                    <p className="text-lg text-gray-500">GPA: 3.8/4.0 | Jan 2024 - May 2026</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-xl">B.Tech, Electronics & Computer Engineering</p>
-                    <p className="text-gray-400 text-xl">Sreenidhi Institute of Technology</p>
-                    <p className="text-lg text-gray-500">GPA: 4.0/4.0 | Jul 2019 - Jul 2023</p>
+                <div className="relative">
+                  <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-cyan-500/30"></div>
+                  <div className="space-y-8">
+                    {[
+                      { degree: "Master's in Data Science", school: "Northeastern University", gpa: "3.8/4.0", period: "Jan 2024 - May 2026" },
+                      { degree: "B.Tech, Electronics & Computer Engineering", school: "Sreenidhi Institute of Technology", gpa: "4.0/4.0", period: "Jul 2019 - Jul 2023" }
+                    ].map((edu, i) => (
+                      <div key={i} className="relative pl-14">
+                        <div className="absolute left-0 top-1 w-10 h-10 rounded-full bg-slate-900 border-2 border-cyan-400 flex items-center justify-center">
+                          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
+                        </div>
+                        <p className="text-cyan-400 text-sm font-medium">{edu.period}</p>
+                        <p className="font-semibold text-lg text-white">{edu.degree}</p>
+                        <p className="text-gray-400">{edu.school}</p>
+                        <p className="text-gray-500 text-sm">GPA: {edu.gpa}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -308,33 +315,36 @@ export default function Portfolio() {
 
       {/* Experience Section */}
       <section id="experience" className="min-h-screen flex items-center px-6 py-20">
-        <div className="max-w-6xl mx-auto w-full">
-          <h2 className="text-5xl font-bold mb-12 text-center">Experience</h2>
-          <div className="space-y-8">
-            {experiences.map((exp, index) => (
-              <div key={index} className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-8 shadow-xl hover:shadow-cyan-500/10 transition-all">
-                <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                  <div>
-                    <h3 className="text-3xl font-semibold text-cyan-400">{exp.title}</h3>
-                    <p className="text-2xl text-gray-300 mt-2">{exp.company}</p>
+        <div className="max-w-4xl mx-auto w-full">
+          <h2 className="text-5xl font-bold mb-16 text-center">Experience</h2>
+          <div className="relative">
+            {/* Vertical line */}
+            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-cyan-500/30"></div>
+            <div className="space-y-12">
+              {experiences.map((exp, index) => (
+                <div key={index} className="relative pl-16">
+                  {/* Circle on timeline */}
+                  <div className="absolute left-0 top-2 w-12 h-12 rounded-full bg-slate-900 border-2 border-cyan-400 flex items-center justify-center">
+                    <div className="w-3 h-3 rounded-full bg-cyan-400"></div>
                   </div>
-                  <div className="text-gray-400 text-lg mt-2 md:mt-0 md:text-right">
-                    <p>{exp.period}</p>
-                    <p>{exp.location}</p>
+                  <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-8 shadow-xl hover:shadow-cyan-500/10 transition-all">
+                    <p className="text-cyan-400 text-sm font-medium mb-1">{exp.period}</p>
+                    <h3 className="text-2xl font-semibold text-white">{exp.title}</h3>
+                    <p className="text-gray-400 text-lg mt-1">{exp.company} · {exp.location}</p>
+                    {exp.highlights && (
+                      <ul className="mt-4 space-y-2 text-gray-300 text-lg">
+                        {exp.highlights.map((highlight, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="text-cyan-400 mr-2">▹</span>
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
-                {exp.highlights && (
-                  <ul className="space-y-3 text-gray-300 text-xl">
-                    {exp.highlights.map((highlight, i) => (
-                      <li key={i} className="flex items-start">
-                        <span className="text-cyan-400 mr-2">▹</span>
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
