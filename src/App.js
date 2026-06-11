@@ -323,14 +323,16 @@ export default function Portfolio() {
                     <p>{exp.location}</p>
                   </div>
                 </div>
-                <ul className="space-y-3 text-gray-300 text-xl">
-                  {exp.highlights.map((highlight, i) => (
-                    <li key={i} className="flex items-start">
-                      <span className="text-cyan-400 mr-2">▹</span>
-                      <span>{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
+                {exp.highlights && (
+                  <ul className="space-y-3 text-gray-300 text-xl">
+                    {exp.highlights.map((highlight, i) => (
+                      <li key={i} className="flex items-start">
+                        <span className="text-cyan-400 mr-2">▹</span>
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             ))}
           </div>
