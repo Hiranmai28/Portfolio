@@ -43,33 +43,18 @@ export default function Portfolio() {
       company: "AstraZeneca, Alexion Pharmaceuticals",
       location: "Boston, MA",
       period: "Jul 2025 - Dec 2025",
-      highlights: [
-        "Developed 10+ Power BI dashboards with optimized DAX calculations, reducing report load times by 60%",
-        "Designed automated ETL pipelines using Alteryx and Python, reducing errors by 75%",
-        "Built Agentic AI solutions to automate onboarding workflows, accelerating task delivery by 50%"
-      ]
     },
     {
       title: "Graduate Research and Teaching Assistant",
       company: "Northeastern University",
       location: "Boston, MA",
-      period: "Aug 2024 - Dec 2024",
-      highlights: [
-        "Coordinated course logistics and guided students through data analysis using Python",
-        "Analyzed user behavior through quantitative experiments, contributing to behavioral modeling",
-        "Increased student engagement by 50% through interactive discussions"
-      ]
+      period: "Aug 2024 - Apr 2025",
     },
     {
       title: "Data Scientist Intern",
       company: "Turingminds.ai",
       location: "Hyderabad, IN",
-      period: "Jan 2023 - Jun 2023",
-      highlights: [
-        "Conducted data cleaning and schema validation of multilingual health datasets",
-        "Performed EDA using Python and R to guide feature selection and model development",
-        "Built interactive dashboards in Tableau and Looker for cross-functional teams"
-      ]
+      period: "Aug 2022 - Jun 2023",
     }
   ];
 
@@ -295,7 +280,7 @@ export default function Portfolio() {
                   <div>
                     <p className="font-semibold text-xl">Master's in Data Science</p>
                     <p className="text-gray-400 text-xl">Northeastern University</p>
-                    <p className="text-lg text-gray-500">GPA: 3.8/4.0 | Jan 2024 - April 2026</p>
+                    <p className="text-lg text-gray-500">GPA: 3.8/4.0 | Jan 2024 - May 2026</p>
                   </div>
                   <div>
                     <p className="font-semibold text-xl">B.Tech, Electronics & Computer Engineering</p>
