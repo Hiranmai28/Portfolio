@@ -10,13 +10,13 @@ export default function Portfolio() {
   const [openSection, setOpenSection] = useState(null); // Prezi zoom state
 
   // Typewriter
-  const roles = ['Data Analyst', 'Data Engineer', 'AI Specialist', 'ML Engineer'];
+  const roles = ['Data Analyst', 'Analytics Engineer', 'AI Specialist', 'Solutions Architect'];
   const [roleIndex, setRoleIndex]   = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [typePhase, setTypePhase]   = useState('typing');
 
   // Counters
-  const [counters, setCounters] = useState({ projects: 0, technologies: 0, certifications: 0, gpa: 0 });
+  const [counters, setCounters] = useState({ technologies: 0, records: 0, dashboards: 0, automation: 0 });
   const [countersStarted, setCountersStarted] = useState(false);
   const numbersRef = useRef(null);
 
@@ -86,12 +86,12 @@ export default function Portfolio() {
 
   useEffect(() => {
     if (!countersStarted) return;
-    const targets = { projects: 10, technologies: 20, certifications: 6, gpa: 38 };
+    const targets = { technologies: 20, records: 50, dashboards: 10, automation: 40 };
     let step = 0;
     const timer = setInterval(() => {
       step++;
       const ease = 1 - Math.pow(1 - step / 60, 3);
-      setCounters({ projects: Math.round(targets.projects * ease), technologies: Math.round(targets.technologies * ease), certifications: Math.round(targets.certifications * ease), gpa: Math.round(targets.gpa * ease) });
+      setCounters({ technologies: Math.round(targets.technologies * ease), records: Math.round(targets.records * ease), dashboards: Math.round(targets.dashboards * ease), automation: Math.round(targets.automation * ease) });
       if (step >= 60) clearInterval(timer);
     }, 30);
     return () => clearInterval(timer);
@@ -102,7 +102,7 @@ export default function Portfolio() {
   const careerPath = [
     {
       type: 'work',
-      title: 'Data Analyst Co-op & Program Coordinator',
+      title: 'Data Analyst & Product Coordinator',
       org: 'AstraZeneca, Alexion Pharmaceuticals',
       location: 'Boston, MA',
       period: 'Jul 2025 - Dec 2025',
@@ -131,10 +131,10 @@ export default function Portfolio() {
     },
     {
       type: 'work',
-      title: 'Data Scientist Intern',
+      title: 'Data Scientist & Analytics Specialist',
       org: 'Turingminds.ai',
       location: 'Hyderabad, IN',
-      period: 'Aug 2022 - Jun 2023',
+      period: 'Aug 2022 - Dec 2023',
     },
     {
       type: 'education',
@@ -199,13 +199,15 @@ export default function Portfolio() {
   ];
 
   const skills = {
-    'Data Engineering':     { items: ['ETL/ELT Pipelines', 'Snowflake', 'Databricks', 'Alteryx', 'Database Architecture', 'Data Modeling'], proficiency: 90, color: 'from-cyan-500 to-cyan-700', bar: 'bg-cyan-500' },
-    'Programming':          { items: ['Python', 'SQL', 'R', 'JavaScript', 'C++'], proficiency: 85, color: 'from-violet-500 to-violet-700', bar: 'bg-violet-500' },
-    'Data Analysis':        { items: ['Statistical Testing', 'Regression Analysis', 'Pandas', 'NumPy', 'Scikit-learn', 'Excel'], proficiency: 88, color: 'from-cyan-400 to-violet-500', bar: 'bg-gradient-to-r from-cyan-400 to-violet-500' },
-    'Visualization & BI':   { items: ['Power BI', 'Tableau', 'Looker', 'Seaborn', 'Matplotlib', 'Plotly'], proficiency: 82, color: 'from-violet-400 to-purple-600', bar: 'bg-violet-400' },
-    'Machine Learning & AI':{ items: ['Supervised & Unsupervised Learning', 'Classification Models', 'NLP', 'RAG', 'Transformers', 'LLM Fine-tuning'], proficiency: 80, color: 'from-fuchsia-500 to-violet-600', bar: 'bg-fuchsia-500' },
-    'Cloud & DevOps':       { items: ['GCP', 'Azure', 'AWS', 'Docker', 'CI/CD', 'GitHub Actions'], proficiency: 75, color: 'from-sky-400 to-cyan-600', bar: 'bg-sky-400' },
-  };
+  'AI & LLMs':            { items: ['LLMs', 'RAG', 'MCP', 'Prompt Engineering', 'Agent Orchestration', 'LLM Evaluation'], color: 'from-fuchsia-500 to-violet-600' },
+  'Machine Learning':     { items: ['Supervised & Unsupervised Learning', 'Classification', 'NLP', 'Transformers', 'Scikit-learn', 'TensorFlow', 'PyTorch', 'Feature Engineering', 'Model Evaluation'], color: 'from-violet-500 to-purple-700' },
+  'Programming':          { items: ['Python', 'SQL', 'R', 'JavaScript', 'C++'], color: 'from-violet-500 to-violet-700' },
+  'Data Engineering':     { items: ['ETL/ELT Pipelines', 'Snowflake', 'Databricks', 'dbt', 'Microsoft Fabric', 'Airflow', 'Prefect', 'Alteryx', 'Data Modeling', 'Data Governance'], color: 'from-cyan-500 to-cyan-700' },
+  'Data Analysis':        { items: ['Statistical Testing', 'A/B Testing', 'Regression Analysis', 'Pandas', 'NumPy', 'Advanced Excel'], color: 'from-cyan-400 to-violet-500' },
+  'Visualization & BI':   { items: ['Power BI', 'Tableau', 'Looker', 'Spotfire', 'DAX', 'Seaborn', 'Matplotlib', 'Plotly'], color: 'from-violet-400 to-purple-600' },
+  'Cloud & DevOps':       { items: ['AWS', 'GCP', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions'], color: 'from-sky-400 to-cyan-600' },
+  'AI Dev Tools':         { items: ['Claude Code', 'Cursor', 'GitHub Copilot', 'ChatGPT'], color: 'from-amber-400 to-orange-600' },
+};
 
   const certifications = [
     { title: 'Snowflake Data Warehousing Badge', issuer: 'Snowflake' },
@@ -221,15 +223,15 @@ export default function Portfolio() {
     { value: '3+', label: 'Years Experience' },
     { value: '10+', label: 'Projects Built' },
     { value: '6+', label: 'Certifications' },
-    { value: '3.8', label: 'GPA' },
+    { value: 'F500', label: 'Clients Served' },
   ];
 
   const counterCards = [
-    { key: 'projects',      label: 'Projects Built',  suffix: '+', fmt: v => v },
-    { key: 'technologies',  label: 'Technologies',    suffix: '+', fmt: v => v },
-    { key: 'certifications',label: 'Certifications',  suffix: '+', fmt: v => v },
-    { key: 'gpa',           label: 'GPA',             suffix: '',  fmt: v => (v / 10).toFixed(1) },
-  ];
+  { key: 'technologies',   label: 'Technologies',       suffix: '+',  fmt: v => v },
+  { key: 'records',        label: 'Records Processed',  suffix: 'K+', fmt: v => v },
+  { key: 'dashboards',     label: 'Dashboards Shipped', suffix: '+',  fmt: v => v },
+  { key: 'automation',     label: 'Work Automated',     suffix: '%',  fmt: v => v },
+];
 
   // Prezi section cards (the "overview" cards)
   const sectionCards = [
@@ -248,26 +250,27 @@ export default function Portfolio() {
       <h2 className="text-4xl md:text-5xl font-extrabold mb-10">About <span className="gradient-text">Me</span></h2>
       <div className="space-y-6 text-lg text-gray-300 leading-relaxed">
         <p>
-          I'm a data-driven problem solver who turns raw, messy information into decisions that matter. Currently completing my
-          <span className="text-cyan-400 font-semibold"> Master's in Data Science at Northeastern University</span> (GPA: 3.8),
-          I bring hands-on experience across the full data stack, from architecting ETL pipelines and building ML models to
-          designing executive dashboards and deploying AI-powered applications.
-        </p>
-        <p>
-          At <span className="text-violet-400 font-semibold">AstraZeneca / Alexion Pharmaceuticals</span>, I reduced report load times
-          by 60%, cut data pipeline errors by 75%, and shipped Agentic AI solutions that cut manual onboarding work in half.
-          My background spans pharma analytics, academic research, LLM fine-tuning, and cross-functional stakeholder communication,
-          so I'm equally comfortable in the weeds of a SQL query and in the boardroom presenting findings.
-        </p>
-        <p>
-          What sets me apart: I don't just <em>analyze</em> data. I <em>engineer systems around it</em>. Whether it's fine-tuning
-          LLMs with LoRA, building RAG pipelines from scratch, or creating Power BI dashboards that executives actually use, I show
-          up with curiosity, precision, and a bias for measurable impact.
-        </p>
-        <p>
-          Outside of data, I'm a people-first leader. I've led teams, hired talent, and mentored students, which means I bring
-          both technical depth and the communication skills to translate it for any audience.
-        </p>
+        I'm a data-driven problem solver who turns raw, messy information into decisions that matter. A recent
+        <span className="text-cyan-400 font-semibold"> Master's in Data Science graduate from Northeastern University</span> (GPA: 3.8),
+        I bring hands-on experience across the full data stack, from architecting ETL pipelines and building ML models to
+        designing executive dashboards and deploying AI-powered applications.
+      </p>
+      <p>
+        At <span className="text-violet-400 font-semibold">AstraZeneca / Alexion Pharmaceuticals</span>, I reduced report load times
+        by 60%, cut data pipeline errors by 75%, and shipped Agentic AI solutions that cut manual onboarding work in half.
+        My background spans pharma analytics, Fortune 500 healthcare consulting, academic research, LLM fine-tuning, and
+        cross-functional stakeholder communication, so I'm equally comfortable in the weeds of a SQL query and in the boardroom
+        presenting findings.
+      </p>
+      <p>
+        What sets me apart: I don't just <em>analyze</em> data. I <em>engineer systems around it</em>. Whether it's fine-tuning
+        LLMs with LoRA and QLoRA, building RAG pipelines with LangChain and FAISS, or designing LLM evaluation frameworks that
+        validate outputs against source data, I show up with curiosity, precision, and a bias for measurable impact.
+      </p>
+      <p>
+        Outside of data, I'm a people-first leader. I've led teams, hired talent, and mentored students, which means I bring
+        both technical depth and the communication skills to translate it for any audience.
+      </p>
       </div>
     </div>
   );
@@ -350,36 +353,27 @@ export default function Portfolio() {
   );
 
   const renderSkills = () => (
-    <div className="max-w-5xl mx-auto px-6 py-16">
-      <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Skills & <span className="gradient-text">Expertise</span></h2>
-      <p className="text-gray-400 mb-12">My technical toolkit, built across industry, research, and personal projects.</p>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Object.entries(skills).map(([cat, data], i) => (
-          <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl border border-slate-700/40 flex flex-col">
-            <div className={`bg-gradient-to-r ${data.color} px-6 py-4`}>
-              <h4 className="font-bold text-white text-sm tracking-wide">{cat}</h4>
-            </div>
-            <div className="p-6 flex-1 flex flex-col">
-              <div className="flex flex-wrap gap-2 mb-5 flex-1">
-                {data.items.map((s, j) => (
-                  <span key={j} className="px-3 py-1 bg-slate-700/70 text-gray-200 rounded-full text-xs border border-slate-600/40">{s}</span>
-                ))}
-              </div>
-              <div>
-                <div className="flex justify-between mb-1.5">
-                  <span className="text-xs text-gray-500 uppercase tracking-wide">Proficiency</span>
-                  <span className="text-xs font-bold text-gray-300">{data.proficiency}%</span>
-                </div>
-                <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full ${data.bar}`} style={{ width: `${data.proficiency}%` }} />
-                </div>
-              </div>
+  <div className="max-w-5xl mx-auto px-6 py-16">
+    <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Skills & <span className="gradient-text">Expertise</span></h2>
+    <p className="text-gray-400 mb-12">My technical toolkit, built across industry, research, and personal projects.</p>
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Object.entries(skills).map(([cat, data], i) => (
+        <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl border border-slate-700/40 flex flex-col">
+          <div className={`bg-gradient-to-r ${data.color} px-6 py-4`}>
+            <h4 className="font-bold text-white text-sm tracking-wide">{cat}</h4>
+          </div>
+          <div className="p-6 flex-1">
+            <div className="flex flex-wrap gap-2">
+              {data.items.map((s, j) => (
+                <span key={j} className="px-3 py-1 bg-slate-700/70 text-gray-200 rounded-full text-xs border border-slate-600/40">{s}</span>
+              ))}
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 
   const renderCertifications = () => (
     <div className="max-w-3xl mx-auto px-6 py-16">
@@ -505,7 +499,7 @@ export default function Portfolio() {
             <span className="cursor-blink text-cyan-400">|</span>
           </h1>
           <p className="animate-fade-in delay-400 text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Transforming complex data into actionable insights through advanced analytics, AI pipelines, and interactive visualizations.
+          From AI agents to executive dashboards. Systems that ship to production, not slides that sit in decks.
           </p>
           <div className="animate-fade-in delay-600 grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 max-w-2xl mx-auto">
             {impactStats.map((stat, i) => (
