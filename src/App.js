@@ -10,7 +10,7 @@ export default function Portfolio() {
   const [openSection, setOpenSection] = useState(null); // Prezi zoom state
 
   // Typewriter
-  const roles = ['Data Analyst', 'Analytics Engineer', 'AI Specialist', 'Solutions Architect'];
+  const roles = ['Data Generalist', 'Analytics Engineer', 'AI Engineer'];
   const [roleIndex, setRoleIndex]   = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [typePhase, setTypePhase]   = useState('typing');
@@ -131,10 +131,10 @@ export default function Portfolio() {
     },
     {
       type: 'work',
-      title: 'Data Scientist & Analytics Specialist',
+      title: 'Data Science Intern & Analytics Specialist',
       org: 'Turingminds.ai',
       location: 'Hyderabad, IN',
-      period: 'Aug 2022 - Dec 2023',
+      period: 'Aug 2022 - Jun 2023',
     },
     {
       type: 'education',
@@ -177,6 +177,16 @@ export default function Portfolio() {
       ],
     },
     {
+      title: 'Healthcare Benefits Navigator',
+      description: 'Interactive healthcare plan explorer with natural language search and RAG-powered contextual answers over 50,000+ plan records.',
+      tech: ['Python', 'SQL', 'FAISS', 'Streamlit', 'RAG', 'Data Validation'],
+      highlights: [
+        'Built data pipelines across 50,000+ healthcare plan records with validation layers that caught quality issues at ingestion',
+        'Deployed as an interactive Streamlit application for real-time plan exploration and comparison',
+        'Ran multiple rounds of usability testing, reaching 89% user satisfaction and informing schema and validation improvements across iterations',
+        ],
+    },
+    {
       title: 'Multiple Disease Prediction (ML)',
       description: 'Real-time health risk prediction tool using ML models to classify multiple diseases',
       tech: ['Python', 'Scikit-learn', 'Streamlit', 'EDA', 'Machine Learning'],
@@ -199,9 +209,9 @@ export default function Portfolio() {
   ];
 
   const skills = {
-  'AI & LLMs':            { items: ['LLMs', 'RAG', 'MCP', 'Prompt Engineering', 'Agent Orchestration', 'LLM Evaluation'], color: 'from-fuchsia-500 to-violet-600' },
-  'Machine Learning':     { items: ['Supervised & Unsupervised Learning', 'Classification', 'NLP', 'Transformers', 'Scikit-learn', 'TensorFlow', 'PyTorch', 'Feature Engineering', 'Model Evaluation'], color: 'from-violet-500 to-purple-700' },
-  'Programming':          { items: ['Python', 'SQL', 'R', 'JavaScript', 'C++'], color: 'from-violet-500 to-violet-700' },
+  'AI & LLMs':            { items: ['LLMs', 'RAG', 'MCP', 'Prompt Engineering', 'Agent Orchestration', 'LLM Evaluation', 'Microsoft Copilot Studio', 'LangGraph', 'FAISS', 'Mistral', 'LoRA', 'QLoRA'], color: 'from-fuchsia-500 to-violet-600' },
+  'Machine Learning':     { items: ['Supervised & Unsupervised Learning', 'Classification', 'NLP', 'Transformers', 'Scikit-learn', 'TensorFlow', 'PyTorch', 'Feature Engineering', 'Model Evaluation', 'LLAMA 2 Fine-Tuning'], color: 'from-violet-500 to-purple-700' },
+  'Programming':          { items: ['Python', 'SQL', 'R', 'JavaScript'], color: 'from-violet-500 to-violet-700' },
   'Data Engineering':     { items: ['ETL/ELT Pipelines', 'Snowflake', 'Databricks', 'dbt', 'Microsoft Fabric', 'Airflow', 'Prefect', 'Alteryx', 'Data Modeling', 'Data Governance'], color: 'from-cyan-500 to-cyan-700' },
   'Data Analysis':        { items: ['Statistical Testing', 'A/B Testing', 'Regression Analysis', 'Pandas', 'NumPy', 'Advanced Excel'], color: 'from-cyan-400 to-violet-500' },
   'Visualization & BI':   { items: ['Power BI', 'Tableau', 'Looker', 'Spotfire', 'DAX', 'Seaborn', 'Matplotlib', 'Plotly'], color: 'from-violet-400 to-purple-600' },
@@ -220,7 +230,7 @@ export default function Portfolio() {
   ];
 
   const impactStats = [
-    { value: '3+', label: 'Years Experience' },
+    { value: '2+', label: 'Years Experience' },
     { value: '10+', label: 'Projects Built' },
     { value: '6+', label: 'Certifications' },
     { value: 'F500', label: 'Clients Served' },
@@ -354,9 +364,8 @@ export default function Portfolio() {
 
   const renderSkills = () => (
   <div className="max-w-5xl mx-auto px-6 py-16">
-    <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Skills & <span className="gradient-text">Expertise</span></h2>
-    <p className="text-gray-400 mb-12">My technical toolkit, built across industry, research, and personal projects.</p>
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Skills & <span className="gradient-text">Expertise</span></h2>       
+    <p className="text-gray-400 mb-12">My technical toolkit, built across industry, research, and personal projects. Sharpened by two years leading teams, running talent acquisition, and presenting to Director and VP audiences, so the technical work always lands with the people who depend on it.</p>    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Object.entries(skills).map(([cat, data], i) => (
         <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl border border-slate-700/40 flex flex-col">
           <div className={`bg-gradient-to-r ${data.color} px-6 py-4`}>
