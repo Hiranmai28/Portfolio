@@ -88,7 +88,7 @@ function ConnectionCanvas({ mode }) {
         x: ((i * 173.1) % 100) / 100 * width,
         y: ((i * 89.7 + 30) % 100) / 100 * height,
         vx: Math.sin(i * 1.7) * .13, vy: Math.cos(i * 2.3) * .09,
-        alpha: .010 + (i % 3) * .004, phase: i * .6,
+        alpha: .003 + (i % 3) * .001, phase: i * .6,
       }));
 
       hexes = [];
@@ -231,7 +231,7 @@ function ConnectionCanvas({ mode }) {
       });
 
       // 5 ── Ghost labels
-      ctx.textAlign='left'; ctx.textBaseline='top'; ctx.font=`9px 'DM Mono',monospace`;
+      ctx.textAlign='left'; ctx.textBaseline='top'; ctx.font=`6px 'DM Mono',monospace`;
       labels.forEach(lbl => {
         const p=Math.sin(frame*.007+lbl.phase)*.35+.65;
         ctx.fillStyle=`rgba(${stroke},${lbl.alpha*p})`; ctx.fillText(lbl.text,lbl.x,lbl.y);
