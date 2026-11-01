@@ -235,7 +235,7 @@ function ConnectionCanvas({ mode }) {
         const p=Math.sin(frame*.007+lbl.phase)*.35+.65;
         const r = 2 + (lbl.phase % 2.5);
         ctx.beginPath(); ctx.arc(lbl.x, lbl.y, r, 0, Math.PI*2);
-        ctx.strokeStyle=`rgba(${stroke},${(.08*p).toFixed(4)})`; ctx.lineWidth=0.8; ctx.stroke();
+        ctx.strokeStyle=`rgba(200,220,240,${(.06*p).toFixed(4)})`; ctx.lineWidth=0.6; ctx.stroke();
         if (!reduced) {
           lbl.x+=lbl.vx; lbl.y+=lbl.vy;
           if(lbl.x<-180)lbl.x=width+20; if(lbl.x>width+180)lbl.x=-160;
