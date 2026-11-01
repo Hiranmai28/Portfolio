@@ -88,7 +88,7 @@ function ConnectionCanvas({ mode }) {
         x: ((i * 173.1) % 100) / 100 * width,
         y: ((i * 89.7 + 30) % 100) / 100 * height,
         vx: Math.sin(i * 1.7) * .13, vy: Math.cos(i * 2.3) * .09,
-        alpha: .045 + (i % 3) * .015, phase: i * .6,
+        alpha: .010 + (i % 3) * .004, phase: i * .6,
       }));
 
       hexes = [];
