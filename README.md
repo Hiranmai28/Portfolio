@@ -8,20 +8,6 @@ Personal portfolio site showcasing my work at the intersection of data, AI, and 
 
 I build AI agents, RAG pipelines, ML models, and dashboards that ship to production. This portfolio walks through my career path, projects, technical toolkit, and credentials in one continuous experience.
 
-## Tech Stack
-
-- **Framework:** React (Create React App)
-- **Styling:** Tailwind CSS
-- **Icons:** Lucide React
-- **Animations:** Custom CSS keyframes, SVG network background, IntersectionObserver-driven counters
-
-## Features
-
-- Prezi-style zoom-in navigation for each section
-- Animated typewriter hero with rotating role titles
-- Live counter animations for impact metrics
-- Interactive particle and line-network background
-- Fully responsive layout
 
 ## Local Development
 
