@@ -230,11 +230,12 @@ function ConnectionCanvas({ mode }) {
         }
       });
 
-      // 5 ── Ghost labels
-      ctx.textAlign='left'; ctx.textBaseline='top'; ctx.font=`6px 'DM Mono',monospace`;
+      // 5 ── Ghost circles (replaced labels)
       labels.forEach(lbl => {
         const p=Math.sin(frame*.007+lbl.phase)*.35+.65;
-        ctx.fillStyle=`rgba(${stroke},${lbl.alpha*p})`; ctx.fillText(lbl.text,lbl.x,lbl.y);
+        const r = 2 + (lbl.phase % 2.5);
+        ctx.beginPath(); ctx.arc(lbl.x, lbl.y, r, 0, Math.PI*2);
+        ctx.strokeStyle=`rgba(${stroke},${(.018*p).toFixed(4)})`; ctx.lineWidth=0.5; ctx.stroke();
         if (!reduced) {
           lbl.x+=lbl.vx; lbl.y+=lbl.vy;
           if(lbl.x<-180)lbl.x=width+20; if(lbl.x>width+180)lbl.x=-160;
