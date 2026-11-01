@@ -1,0 +1,3 @@
+/* Base CSS for Create React App. Component and theme styles live in App.css. */
+html { -webkit-text-size-adjust: 100%; }
+#root { min-height: 100vh; }
