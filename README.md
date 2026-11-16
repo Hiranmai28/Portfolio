@@ -1,4 +1,4 @@
-# Hiranmai Devarasetty — complete React portfolio
+# Complete Portfolio
 
 This is a **complete independent React project** matching the Create React App structure in your VS Code screenshot. You do not need your earlier portfolio files to run it. It includes the source code, `package.json`, HTML entry page, styling, content, and the visual assets.
 
