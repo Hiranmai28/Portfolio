@@ -140,89 +140,106 @@ function ConnectionCanvas({ mode }) {
     const draw = () => {
       if (!running) return;
       ctx.clearRect(0, 0, width, height);
-      const orbit = mode === 'orbit';
-      const stroke = orbit ? '170,108,255' : '20,210,248';
-      const stroke2 = orbit ? '232,140,192' : '72,164,255';
-      const linked = orbit ? 175 : 155;
+      const isImmersive = mode === 'immersive';
+      // Immersive: glowing purple/pink. Classic: subtle dark navy blueprint.
+      const stroke = isImmersive ? '168,112,248' : '18,52,104';
+      const stroke2 = isImmersive ? '224,128,190' : '12,108,175';
+      const linked = isImmersive ? 175 : 145;
 
-      // 0 ── Atmospheric light volumes (dimensional depth)
-      {
-        const gx = orbit ? width*.65 : width*.82, gy = orbit ? height*.28 : height*.06, gr = orbit ? width*.60 : width*.52;
+      // 0 ── Atmospheric light volumes (immersive only; classic gets a whisper)
+      if (isImmersive) {
+        const gx = width*.65, gy = height*.28, gr = width*.60;
         const grd = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
         grd.addColorStop(0, `rgba(${stroke},.07)`); grd.addColorStop(.55, `rgba(${stroke},.024)`); grd.addColorStop(1, `rgba(${stroke},0)`);
         ctx.fillStyle = grd; ctx.fillRect(0, 0, width, height);
-        const g2x = orbit ? width*.18 : width*.1, g2y = orbit ? height*.76 : height*.82;
-        const g2rd = ctx.createRadialGradient(g2x, g2y, 0, g2x, g2y, width*.42);
+        const g2rd = ctx.createRadialGradient(width*.18, height*.76, 0, width*.18, height*.76, width*.42);
         g2rd.addColorStop(0, `rgba(${stroke2},.048)`); g2rd.addColorStop(1, `rgba(${stroke2},0)`);
         ctx.fillStyle = g2rd; ctx.fillRect(0, 0, width, height);
-        if (orbit) {
-          [[.28,.35],[.72,.60],[.52,.82]].forEach(([nx,ny],ni) => {
-            const ph = Math.sin(frame*.004+ni*2.3)*.3+.7;
-            const ngrd = ctx.createRadialGradient(nx*width,ny*height,0,nx*width,ny*height,width*.24);
-            ngrd.addColorStop(0,`rgba(${stroke},${.034*ph})`); ngrd.addColorStop(.6,`rgba(${stroke2},${.015*ph})`); ngrd.addColorStop(1,`rgba(${stroke},0)`);
-            ctx.fillStyle=ngrd; ctx.fillRect(0,0,width,height);
-          });
-        }
+        [[.28,.35],[.72,.60],[.52,.82]].forEach(([nx,ny],ni) => {
+          const ph = Math.sin(frame*.004+ni*2.3)*.3+.7;
+          const ngrd = ctx.createRadialGradient(nx*width,ny*height,0,nx*width,ny*height,width*.24);
+          ngrd.addColorStop(0,`rgba(${stroke},${.034*ph})`); ngrd.addColorStop(.6,`rgba(${stroke2},${.015*ph})`); ngrd.addColorStop(1,`rgba(${stroke},0)`);
+          ctx.fillStyle=ngrd; ctx.fillRect(0,0,width,height);
+        });
+      } else {
+        // Classic: slow-breathing dual-pulse for gentle motion
+        const breathe = Math.sin(frame * 0.007) * 0.5 + 0.5;
+        const grd = ctx.createRadialGradient(width*.72, height*.14, 0, width*.72, height*.14, width*.68);
+        grd.addColorStop(0, `rgba(${stroke},${(0.016 + breathe * 0.018).toFixed(4)})`);
+        grd.addColorStop(1, `rgba(${stroke},0)`);
+        ctx.fillStyle = grd; ctx.fillRect(0, 0, width, height);
+        const grd2 = ctx.createRadialGradient(width*.12, height*.82, 0, width*.12, height*.82, width*.48);
+        grd2.addColorStop(0, `rgba(${stroke2},${(0.010 + breathe * 0.012).toFixed(4)})`);
+        grd2.addColorStop(1, `rgba(${stroke2},0)`);
+        ctx.fillStyle = grd2; ctx.fillRect(0, 0, width, height);
       }
 
       // 1 ── Hex grid
       hexes.forEach(h => {
         const p = Math.sin(frame*.016+h.phase)*.5+.5;
         hexPath(h.x, h.y, h.r);
-        ctx.strokeStyle=`rgba(${stroke},${.022+p*.028})`; ctx.lineWidth=.55; ctx.stroke();
+        ctx.strokeStyle=`rgba(${stroke},${isImmersive ? .022+p*.028 : .018+p*.016})`; ctx.lineWidth=.55; ctx.stroke();
       });
 
-      // 2 ── Flow rivers (data highways)
-      flowLines.forEach((fl, fi) => {
-        ctx.beginPath();
-        fl.pts.forEach((pt,pi) => {
-          if (pi===0) { ctx.moveTo(pt.x,pt.y); return; }
-          const prev=fl.pts[pi-1];
-          if (orbit) ctx.quadraticCurveTo(prev.x+(pt.x-prev.x)*.4+28*Math.sin(pi+fi),prev.y-(pt.x-prev.x)*.14,pt.x,pt.y);
-          else ctx.lineTo(pt.x,pt.y);
+      // 2 ── Flow rivers (immersive only)
+      if (isImmersive) {
+        flowLines.forEach((fl, fi) => {
+          ctx.beginPath();
+          fl.pts.forEach((pt,pi) => {
+            if (pi===0) { ctx.moveTo(pt.x,pt.y); return; }
+            const prev=fl.pts[pi-1];
+            ctx.quadraticCurveTo(prev.x+(pt.x-prev.x)*.4+28*Math.sin(pi+fi),prev.y-(pt.x-prev.x)*.14,pt.x,pt.y);
+          });
+          ctx.strokeStyle=`rgba(${stroke},.04)`; ctx.lineWidth=1.4; ctx.setLineDash([14,9]); ctx.stroke(); ctx.setLineDash([]);
+          for (let k=0;k<2;k++) {
+            const t=reduced?.5:((frame*.002+fi*.27+k*.5)%1);
+            const si=Math.min(Math.floor(t*(fl.pts.length-1)),fl.pts.length-2);
+            const st=(t*(fl.pts.length-1))%1;
+            const px=fl.pts[si].x+(fl.pts[si+1].x-fl.pts[si].x)*st;
+            const py=fl.pts[si].y+(fl.pts[si+1].y-fl.pts[si].y)*st;
+            const pA=Math.sin(t*Math.PI)*.82;
+            ctx.beginPath(); ctx.arc(px,py,2.8,0,Math.PI*2); ctx.fillStyle=`rgba(${stroke2},${pA})`; ctx.fill();
+            ctx.beginPath(); ctx.arc(px,py,5.5,0,Math.PI*2); ctx.fillStyle=`rgba(${stroke2},${pA*.22})`; ctx.fill();
+          }
         });
-        ctx.strokeStyle=`rgba(${stroke},.04)`; ctx.lineWidth=orbit?1.4:1.1; ctx.setLineDash([14,9]); ctx.stroke(); ctx.setLineDash([]);
-        for (let k=0;k<2;k++) {
-          const t=reduced?.5:((frame*.002+fi*.27+k*.5)%1);
-          const si=Math.min(Math.floor(t*(fl.pts.length-1)),fl.pts.length-2);
-          const st=(t*(fl.pts.length-1))%1;
-          const px=fl.pts[si].x+(fl.pts[si+1].x-fl.pts[si].x)*st;
-          const py=fl.pts[si].y+(fl.pts[si+1].y-fl.pts[si].y)*st;
-          const pA=Math.sin(t*Math.PI)*.82;
-          ctx.beginPath(); ctx.arc(px,py,2.8,0,Math.PI*2); ctx.fillStyle=`rgba(${stroke2},${pA})`; ctx.fill();
-          ctx.beginPath(); ctx.arc(px,py,5.5,0,Math.PI*2); ctx.fillStyle=`rgba(${stroke2},${pA*.22})`; ctx.fill();
-        }
-      });
+      }
 
       // 3 ── Knowledge graph edges + in-flight packets
       KG_EDGES.forEach(([ai,bi]) => {
         const a=kgNodes[ai],b=kgNodes[bi]; if (!a||!b) return;
         const dist=Math.hypot(a.x-b.x,a.y-b.y); if (dist>width*.68) return;
-        const edgeA=(1-dist/(width*.68))*.22;
+        const edgeA=(1-dist/(width*.68))*(isImmersive ? .22 : .07);
         ctx.beginPath();
-        if (orbit) { const cpx=(a.x+b.x)/2+(b.y-a.y)*.18,cpy=(a.y+b.y)/2-(b.x-a.x)*.18; ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo(cpx,cpy,b.x,b.y); }
+        if (isImmersive) { const cpx=(a.x+b.x)/2+(b.y-a.y)*.18,cpy=(a.y+b.y)/2-(b.x-a.x)*.18; ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo(cpx,cpy,b.x,b.y); }
         else { ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); }
         ctx.strokeStyle=`rgba(${stroke},${edgeA})`; ctx.lineWidth=1.0; ctx.setLineDash([8,5]); ctx.stroke(); ctx.setLineDash([]);
-        if (!reduced) {
+        if (!reduced && isImmersive) {
           const t=((frame*.0038+ai*.15+bi*.09)%1);
-          let px,py;
-          if (orbit) { const cpx=(a.x+b.x)/2+(b.y-a.y)*.18,cpy=(a.y+b.y)/2-(b.x-a.x)*.18; px=(1-t)*(1-t)*a.x+2*(1-t)*t*cpx+t*t*b.x; py=(1-t)*(1-t)*a.y+2*(1-t)*t*cpy+t*t*b.y; }
-          else { px=a.x+(b.x-a.x)*t; py=a.y+(b.y-a.y)*t; }
+          const cpx=(a.x+b.x)/2+(b.y-a.y)*.18,cpy=(a.y+b.y)/2-(b.x-a.x)*.18;
+          const px=(1-t)*(1-t)*a.x+2*(1-t)*t*cpx+t*t*b.x;
+          const py=(1-t)*(1-t)*a.y+2*(1-t)*t*cpy+t*t*b.y;
           const pA=Math.sin(t*Math.PI)*.9;
           ctx.beginPath(); ctx.arc(px,py,2.3,0,Math.PI*2); ctx.fillStyle=`rgba(${stroke2},${pA})`; ctx.fill();
         }
       });
 
-      // 4 ── KG nodes (prominently glowing labeled circles)
+      // 4 ── KG nodes — glowing in immersive, ghost-minimal in classic
       ctx.textAlign='center'; ctx.textBaseline='middle';
       kgNodes.forEach(n => {
         const p=Math.sin(frame*.011+n.phase)*.25+.75;
-        for (let g=3;g>=1;g--) { ctx.beginPath(); ctx.arc(n.x,n.y,n.r+g*9,0,Math.PI*2); ctx.fillStyle=`rgba(${stroke},${.014*p/g})`; ctx.fill(); }
-        const bg=ctx.createRadialGradient(n.x-n.r*.3,n.y-n.r*.3,0,n.x,n.y,n.r);
-        bg.addColorStop(0,`rgba(${stroke},.24)`); bg.addColorStop(1,`rgba(${stroke},.07)`);
-        ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fillStyle=bg; ctx.fill();
-        ctx.strokeStyle=`rgba(${stroke},${.55*p})`; ctx.lineWidth=1.15; ctx.stroke();
-        ctx.font=`bold 9.5px 'DM Mono',monospace`; ctx.fillStyle=`rgba(${stroke},${.82*p})`; ctx.fillText(n.label,n.x,n.y);
+        if (isImmersive) {
+          for (let g=3;g>=1;g--) { ctx.beginPath(); ctx.arc(n.x,n.y,n.r+g*9,0,Math.PI*2); ctx.fillStyle=`rgba(${stroke},${.014*p/g})`; ctx.fill(); }
+          const bg=ctx.createRadialGradient(n.x-n.r*.3,n.y-n.r*.3,0,n.x,n.y,n.r);
+          bg.addColorStop(0,`rgba(${stroke},.24)`); bg.addColorStop(1,`rgba(${stroke},.07)`);
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fillStyle=bg; ctx.fill();
+          ctx.strokeStyle=`rgba(${stroke},${.55*p})`; ctx.lineWidth=1.15; ctx.stroke();
+          ctx.font=`bold 9.5px 'DM Mono',monospace`; ctx.fillStyle=`rgba(${stroke},${.82*p})`; ctx.fillText(n.label,n.x,n.y);
+        } else {
+          // Classic: near-invisible ghost circles, text at ~5% opacity
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+          ctx.strokeStyle=`rgba(${stroke},${.055*p})`; ctx.lineWidth=0.65; ctx.stroke();
+          ctx.font=`bold 7px 'DM Mono',monospace`; ctx.fillStyle=`rgba(${stroke},${.048*p})`; ctx.fillText(n.label,n.x,n.y);
+        }
         if (!reduced) {
           n.x+=n.vx; n.y+=n.vy;
           if(n.x<-80)n.x=width+80; if(n.x>width+80)n.x=-80;
@@ -230,12 +247,13 @@ function ConnectionCanvas({ mode }) {
         }
       });
 
-      // 5 ── Ghost circles (replaced labels)
+      // 5 ── Ghost circles
       labels.forEach(lbl => {
         const p=Math.sin(frame*.007+lbl.phase)*.35+.65;
         const r = 2 + (lbl.phase % 2.5);
         ctx.beginPath(); ctx.arc(lbl.x, lbl.y, r, 0, Math.PI*2);
-        ctx.strokeStyle=`rgba(200,220,240,${(.06*p).toFixed(4)})`; ctx.lineWidth=0.6; ctx.stroke();
+        const ghostRGB = isImmersive ? '200,220,240' : `${stroke}`;
+        ctx.strokeStyle=`rgba(${ghostRGB},${(.055*p).toFixed(4)})`; ctx.lineWidth=0.6; ctx.stroke();
         if (!reduced) {
           lbl.x+=lbl.vx; lbl.y+=lbl.vy;
           if(lbl.x<-180)lbl.x=width+20; if(lbl.x>width+180)lbl.x=-160;
@@ -248,12 +266,12 @@ function ConnectionCanvas({ mode }) {
         for (let j=i+1;j<points.length;j++) {
           const b=points[j]; const dist=Math.hypot(a.x-b.x,a.y-b.y);
           if (dist>linked) continue;
-          ctx.strokeStyle=`rgba(${stroke},${(1-dist/linked)*(orbit?.14:.11)})`; ctx.lineWidth=.7; ctx.beginPath();
-          if (orbit) { ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo((a.x+b.x)/2+15,(a.y+b.y)/2-20,b.x,b.y); }
+          ctx.strokeStyle=`rgba(${stroke},${(1-dist/linked)*(isImmersive?.14:.10)})`; ctx.lineWidth=.7; ctx.beginPath();
+          if (isImmersive) { ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo((a.x+b.x)/2+15,(a.y+b.y)/2-20,b.x,b.y); }
           else { ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); }
           ctx.stroke();
         }
-        ctx.beginPath(); ctx.fillStyle=`rgba(${stroke},${orbit?.46:.42})`; ctx.arc(a.x,a.y,i%7===0?1.9:.85,0,Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.fillStyle=`rgba(${stroke},${isImmersive?.46:.36})`; ctx.arc(a.x,a.y,i%7===0?1.9:.85,0,Math.PI*2); ctx.fill();
         if (!reduced) {
           a.x+=a.vx; a.y+=a.vy;
           if(a.x<-25)a.x=width+25; if(a.y<-25)a.y=height+25;
@@ -261,14 +279,16 @@ function ConnectionCanvas({ mode }) {
         }
       });
 
-      // 7 ── Stream packets
-      const packetCount=mobile?6:14;
-      for (let i=0;i<packetCount;i++) {
-        const a=points[(i*5)%points.length],b=points[(i*5+3)%points.length]; if(!a||!b) continue;
-        const t=reduced?.5:(frame*.003+i*.072)%1;
-        const alpha=Math.sin(t*Math.PI)*.78;
-        ctx.fillStyle=orbit?`rgba(${stroke2},${alpha})`:`rgba(180,238,255,${alpha})`;
-        ctx.beginPath(); ctx.arc(a.x*(1-t)+b.x*t,a.y*(1-t)+b.y*t,2.2,0,Math.PI*2); ctx.fill();
+      // 7 ── Stream packets (immersive only)
+      if (isImmersive) {
+        const packetCount=mobile?6:14;
+        for (let i=0;i<packetCount;i++) {
+          const a=points[(i*5)%points.length],b=points[(i*5+3)%points.length]; if(!a||!b) continue;
+          const t=reduced?.5:(frame*.003+i*.072)%1;
+          const alpha=Math.sin(t*Math.PI)*.78;
+          ctx.fillStyle=`rgba(${stroke2},${alpha})`;
+          ctx.beginPath(); ctx.arc(a.x*(1-t)+b.x*t,a.y*(1-t)+b.y*t,2.2,0,Math.PI*2); ctx.fill();
+        }
       }
 
       frame++;
@@ -293,24 +313,35 @@ function ConnectionCanvas({ mode }) {
 
 function Butterfly({ small = false }) {
   const gradientId = useId().replace(/:/g, '') + '-butterfly';
+  const glowId = useId().replace(/:/g, '') + '-bfly-glow';
   return <svg className={`butterfly-svg ${small ? 'butterfly-small' : ''}`} viewBox="0 0 100 90" role="img" aria-label="Iridescent butterfly">
     <defs>
       <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="#a8ebf9" stopOpacity=".95" />
-        <stop offset=".52" stopColor="#a89de7" stopOpacity=".80" />
-        <stop offset="1" stopColor="#f1c6b3" stopOpacity=".72" />
+        <stop offset="0"   stopColor="#20f0ff" stopOpacity="1"   />
+        <stop offset=".38" stopColor="#8040ff" stopOpacity=".95" />
+        <stop offset=".72" stopColor="#ff40c0" stopOpacity=".90" />
+        <stop offset="1"   stopColor="#ffb060" stopOpacity=".85" />
       </linearGradient>
+      <filter id={glowId} x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="2.2" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
     </defs>
-    <g className="wing wing-left" transform="translate(50 47)">
-      <path d="M0 1C-13-17-49-41-45-14C-40 8-19 16-2 7C-25 9-43 34-23 38C-10 40-4 21 0 1Z" fill={`url(#${gradientId})`} stroke="#b7d8fa" strokeWidth=".8"/>
-      <path d="M-4 4 Q-18-11-37-19 M-6 8 Q-19 20-29 29" stroke="#fff" strokeOpacity=".38" strokeWidth=".6" fill="none" />
+    <g filter={`url(#${glowId})`}>
+      <g className="wing wing-left" transform="translate(50 47)">
+        <path d="M0 1C-13-17-49-41-45-14C-40 8-19 16-2 7C-25 9-43 34-23 38C-10 40-4 21 0 1Z" fill={`url(#${gradientId})`} stroke="#40f0ff" strokeWidth="1"/>
+        <path d="M-4 4 Q-18-11-37-19 M-6 8 Q-19 20-29 29" stroke="#fff" strokeOpacity=".65" strokeWidth=".7" fill="none" />
+        {/* electric edge shimmer */}
+        <path d="M-2 3 Q-14-10-30-18" stroke="#a0ffff" strokeOpacity=".55" strokeWidth=".5" fill="none"/>
+      </g>
+      <g className="wing wing-right" transform="translate(50 47)">
+        <path d="M0 1C13-17 49-41 45-14C40 8 19 16 2 7C25 9 43 34 23 38C10 40 4 21 0 1Z" fill={`url(#${gradientId})`} stroke="#c060ff" strokeWidth="1"/>
+        <path d="M4 4 Q18-11 37-19 M6 8 Q19 20 29 29" stroke="#fff" strokeOpacity=".65" strokeWidth=".7" fill="none" />
+        <path d="M2 3 Q14-10 30-18" stroke="#ffa0ff" strokeOpacity=".55" strokeWidth=".5" fill="none"/>
+      </g>
+      <path d="M50 33Q47 23 44 21 M50 33Q53 23 57 21" stroke="#a0f8ff" strokeWidth="1.1" fill="none" />
+      <path d="M50 37Q53 53 50 64" stroke="#e0d0ff" strokeWidth="3" strokeLinecap="round" fill="none" />
     </g>
-    <g className="wing wing-right" transform="translate(50 47)">
-      <path d="M0 1C13-17 49-41 45-14C40 8 19 16 2 7C25 9 43 34 23 38C10 40 4 21 0 1Z" fill={`url(#${gradientId})`} stroke="#b7d8fa" strokeWidth=".8"/>
-      <path d="M4 4 Q18-11 37-19 M6 8 Q19 20 29 29" stroke="#fff" strokeOpacity=".38" strokeWidth=".6" fill="none" />
-    </g>
-    <path d="M50 33Q47 23 44 21 M50 33Q53 23 57 21" stroke="#dce8ee" strokeWidth="1" fill="none" />
-    <path d="M50 37Q53 53 50 64" stroke="#e9d8c7" strokeWidth="3" strokeLinecap="round" fill="none" />
   </svg>;
 }
 
@@ -323,70 +354,77 @@ function Flower() {
   return <svg className="flower-svg" viewBox="0 0 150 185" role="img" aria-label="Electrified lotus rising from water">
     <defs>
       <linearGradient id={`${gid}p`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stopColor="#b8f6ff" stopOpacity=".98"/>
-        <stop offset=".5" stopColor="#90c8f8" stopOpacity=".85"/>
-        <stop offset="1" stopColor="#b068ee" stopOpacity=".65"/>
+        <stop offset="0"   stopColor="#60ffff" stopOpacity="1"  />
+        <stop offset=".38" stopColor="#40b8ff" stopOpacity=".95"/>
+        <stop offset=".78" stopColor="#c040ff" stopOpacity=".88"/>
+        <stop offset="1"   stopColor="#8020cc" stopOpacity=".75"/>
       </linearGradient>
       <radialGradient id={`${gid}c`} cx=".5" cy=".5" r=".5">
-        <stop offset="0" stopColor="#fffef0"/>
-        <stop offset=".5" stopColor="#f4e040" stopOpacity=".92"/>
-        <stop offset="1" stopColor="#c07818" stopOpacity=".5"/>
+        <stop offset="0" stopColor="#ffffff"/>
+        <stop offset=".4" stopColor="#ffe840" stopOpacity=".98"/>
+        <stop offset=".8" stopColor="#ffaa10" stopOpacity=".85"/>
+        <stop offset="1" stopColor="#e06000" stopOpacity=".6"/>
       </radialGradient>
       <radialGradient id={`${gid}glow`} cx=".5" cy=".5" r=".5">
-        <stop offset="0" stopColor="#80f0ff" stopOpacity=".45"/>
-        <stop offset="1" stopColor="#80f0ff" stopOpacity="0"/>
+        <stop offset="0" stopColor="#40ffff" stopOpacity=".70"/>
+        <stop offset=".5" stopColor="#8040ff" stopOpacity=".30"/>
+        <stop offset="1" stopColor="#40ffff" stopOpacity="0"/>
       </radialGradient>
-      <filter id={`${gid}f`} x="-80%" y="-80%" width="260%" height="260%">
-        <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <filter id={`${gid}f`} x="-90%" y="-90%" width="280%" height="280%">
+        <feGaussianBlur stdDeviation="4.5" result="b"/>
         <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
     </defs>
 
-    {/* Ambient glow behind whole flower */}
-    <ellipse cx="75" cy="95" rx="52" ry="46" fill={`url(#${gid}glow)`}/>
+    {/* Ambient glow behind whole flower — larger, more vivid */}
+    <ellipse cx="75" cy="90" rx="62" ry="54" fill={`url(#${gid}glow)`}/>
+    <ellipse cx="75" cy="90" rx="38" ry="34" fill={`url(#${gid}glow)`} opacity=".6"/>
 
-    {/* Water ripples */}
-    <path d="M10 170 Q38 162 75 170 Q112 178 140 170" fill="none" stroke="#3cc0d8" strokeWidth="1.4" strokeOpacity=".6"/>
-    <path d="M4 178 Q38 170 75 178 Q112 186 146 178" fill="none" stroke="#3cc0d8" strokeWidth=".9" strokeOpacity=".3"/>
-    <path d="M22 163 Q48 157 75 163 Q102 169 128 163" fill="none" stroke="#70d8ee" strokeWidth=".8" strokeOpacity=".38"/>
+    {/* Water ripples — electric teal */}
+    <path d="M10 170 Q38 162 75 170 Q112 178 140 170" fill="none" stroke="#20e8ff" strokeWidth="1.6" strokeOpacity=".75"/>
+    <path d="M4 178 Q38 170 75 178 Q112 186 146 178" fill="none" stroke="#20d0ff" strokeWidth="1" strokeOpacity=".40"/>
+    <path d="M22 163 Q48 157 75 163 Q102 169 128 163" fill="none" stroke="#60f0ff" strokeWidth=".9" strokeOpacity=".50"/>
 
-    {/* Lily pad — wide, flat ellipse sitting on water */}
-    <ellipse cx="75" cy="162" rx="52" ry="14" fill="#185838" fillOpacity=".78" stroke="#38885a" strokeWidth="1"/>
-    {/* Pad veins */}
-    <path d="M75 148 L75 176" stroke="#48c870" strokeWidth=".8" strokeOpacity=".38"/>
-    <path d="M75 162 Q55 156 38 162" stroke="#48c870" strokeWidth=".7" strokeOpacity=".3"/>
-    <path d="M75 162 Q95 156 112 162" stroke="#48c870" strokeWidth=".7" strokeOpacity=".3"/>
-    {/* Notch cut */}
-    <path d="M71 148 Q75 140 79 148" fill="#091c28" fillOpacity=".55"/>
+    {/* Lily pad — brighter electric green */}
+    <ellipse cx="75" cy="162" rx="52" ry="14" fill="#1a6840" fillOpacity=".88" stroke="#40d878" strokeWidth="1.2"/>
+    <path d="M75 148 L75 176" stroke="#60f090" strokeWidth=".9" strokeOpacity=".55"/>
+    <path d="M75 162 Q55 156 38 162" stroke="#60f090" strokeWidth=".8" strokeOpacity=".42"/>
+    <path d="M75 162 Q95 156 112 162" stroke="#60f090" strokeWidth=".8" strokeOpacity=".42"/>
+    <path d="M71 148 Q75 140 79 148" fill="#081820" fillOpacity=".6"/>
 
-    {/* Stem */}
-    <path d="M75 148 L75 120" stroke="#289050" strokeWidth="2" strokeOpacity=".75"/>
+    {/* Stem — bright electric green */}
+    <path d="M75 148 L75 120" stroke="#40e870" strokeWidth="2.2" strokeOpacity=".88"/>
 
     {/* Flower head — front-facing fan of petals */}
     <g className="flower-head" filter={`url(#${gid}f)`}>
-      {/* Outer petals — 5, wide fan */}
+      {/* Outer petals — vivid, higher opacity */}
       {outerAngles.map((angle, i) => (
         <ellipse key={i} cx="75" cy="74" rx="13" ry="32"
-          fill={`url(#${gid}p)`} fillOpacity=".42"
-          stroke="#7ee8ff" strokeWidth="1" strokeDasharray="6 3" strokeOpacity=".85"
+          fill={`url(#${gid}p)`} fillOpacity=".72"
+          stroke="#20ffff" strokeWidth="1.2" strokeDasharray="6 3" strokeOpacity="1"
           transform={`rotate(${angle} 75 118)`}/>
       ))}
-      {/* Inner petals — 4 */}
+      {/* Inner petals — bright electric */}
       {innerAngles.map((angle, i) => (
         <ellipse key={i} cx="75" cy="82" rx="9" ry="22"
-          fill={`url(#${gid}p)`} fillOpacity=".68"
-          stroke="#a888f8" strokeWidth=".9" strokeOpacity=".9"
+          fill={`url(#${gid}p)`} fillOpacity=".90"
+          stroke="#c060ff" strokeWidth="1.1" strokeOpacity="1"
           transform={`rotate(${angle} 75 118)`}/>
       ))}
-      {/* Electric sparks shooting upward */}
-      <path d="M75 46 L71 55 L77 54 L73 63" stroke="#d8ffff" strokeWidth="1.1" strokeOpacity=".9" fill="none" strokeLinecap="round"/>
-      <path d="M94 54 L91 62 L96 61 L93 69" stroke="#d8ffff" strokeWidth=".9" strokeOpacity=".72" fill="none" strokeLinecap="round"/>
-      <path d="M56 54 L59 62 L54 61 L57 69" stroke="#d8ffff" strokeWidth=".9" strokeOpacity=".72" fill="none" strokeLinecap="round"/>
-      {/* Outer glow ring */}
-      <circle cx="75" cy="105" r="17" fill="none" stroke="#80f0ff" strokeWidth="1.2" strokeOpacity=".22"/>
-      {/* Center stamens */}
-      <circle cx="75" cy="110" r="15" fill={`url(#${gid}c)`} stroke="#f4dc50" strokeWidth="1.5"/>
-      <circle cx="75" cy="110" r="6" fill="#fffde8" stroke="#ffe880" strokeWidth="1"/>
+      {/* Electric sparks — more numerous, brighter */}
+      <path d="M75 44 L70 54 L77 53 L72 63" stroke="#ffffff" strokeWidth="1.4" strokeOpacity="1" fill="none" strokeLinecap="round"/>
+      <path d="M95 52 L91 61 L97 60 L93 70" stroke="#80ffff" strokeWidth="1.1" strokeOpacity=".92" fill="none" strokeLinecap="round"/>
+      <path d="M55 52 L59 61 L53 60 L57 70" stroke="#80ffff" strokeWidth="1.1" strokeOpacity=".92" fill="none" strokeLinecap="round"/>
+      <path d="M85 40 L83 47 L87 46 L85 53" stroke="#ffccff" strokeWidth=".9" strokeOpacity=".80" fill="none" strokeLinecap="round"/>
+      <path d="M65 40 L67 47 L63 46 L65 53" stroke="#ffccff" strokeWidth=".9" strokeOpacity=".80" fill="none" strokeLinecap="round"/>
+      {/* Outer glow rings — brighter, doubled */}
+      <circle cx="75" cy="105" r="20" fill="none" stroke="#40ffff" strokeWidth="1.4" strokeOpacity=".42"/>
+      <circle cx="75" cy="105" r="26" fill="none" stroke="#8040ff" strokeWidth=".8" strokeOpacity=".22"/>
+      {/* Center stamens — bright gold-white */}
+      <circle cx="75" cy="110" r="15" fill={`url(#${gid}c)`} stroke="#ffe040" strokeWidth="2"/>
+      <circle cx="75" cy="110" r="6" fill="#ffffff" stroke="#fff080" strokeWidth="1.2"/>
+      {/* Center highlight dot */}
+      <circle cx="75" cy="110" r="2.5" fill="#ffffff" opacity=".95"/>
     </g>
   </svg>;
 }
@@ -421,8 +459,8 @@ function Header({ mode, onModeChange, onContact }) {
       <a href="#intro" onClick={()=>setMenu(false)}>Intro</a><a href="#projects" onClick={()=>setMenu(false)}>Projects</a>
       <a href="#experience" onClick={()=>setMenu(false)}>Experience</a><a href="#skills" onClick={()=>setMenu(false)}>Skills</a>
       <div className="mode-switch" role="group" aria-label="Portfolio viewing mode">
-        <button type="button" className={mode==='signal'?'selected':''} aria-pressed={mode==='signal'} onClick={()=>set('signal')}>◈ Signal <span>Impact</span></button>
-        <button type="button" className={mode==='orbit'?'selected':''} aria-pressed={mode==='orbit'} onClick={()=>set('orbit')}>◌ Orbit <span>Discover</span></button>
+        <button type="button" className={mode==='classic'?'selected':''} aria-pressed={mode==='classic'} onClick={()=>set('classic')}><span className="mode-icon">☀</span> Classic</button>
+        <button type="button" className={mode==='immersive'?'selected':''} aria-pressed={mode==='immersive'} onClick={()=>set('immersive')}><span className="mode-icon">✦</span> Immersive</button>
       </div>
       <button className="header-contact" onClick={()=>{onContact();setMenu(false)}}>Let's Talk <ArrowUpRight size={15}/></button>
     </nav>
@@ -439,7 +477,7 @@ function Hero({ mode }) {
         <p className="hero-tagline">Discover with data.<br/><span>Accelerate with AI.</span><br/>Deliver with purpose.</p>
         <div className="hero-areas"><i/> DATA <span>/</span> AI <span>/</span> ANALYTICS ENGINEERING</div>
       </div>
-      <div className="hero-visual">{mode==='signal'?<SignalWorld/>:<OrbitWorld/>}</div>
+      <div className="hero-visual">{mode==='classic'?<SignalWorld/>:<OrbitWorld/>}</div>
     </div>
     <button className="scroll-hint" onClick={()=>scrollToSection('journey')}><ArrowDownRight size={19}/> SCROLL TO DISCOVER</button>
   </section>;
@@ -472,9 +510,9 @@ function JourneyRail({ progress, active }) {
         <path d={RAIL_PATH} fill="none" stroke="url(#railGradient)" strokeWidth="2" strokeDasharray={measure.length} strokeDashoffset={measure.length*(1-progress)}/>
         <g transform={`translate(${measure.point.x-55} ${measure.point.y-55}) rotate(${progress*28-12} 55 55)`}>
           <svg width="110" height="110" viewBox="0 0 100 90"><g className="rail-butterfly">
-            <path d="M50 45 C9 -8 -7 14 15 43 C25 52 35 50 50 45 C20 52 23 88 42 70 Z" fill="#9dd6eb" fillOpacity=".55" stroke="#9dd6eb" strokeWidth="1.4" strokeDasharray="5 3.5" strokeLinejoin="round"/>
-            <path d="M50 45 C91 -8 107 14 85 43 C75 52 65 50 50 45 C80 52 77 88 58 70 Z" fill="#be9def" fillOpacity=".50" stroke="#be9def" strokeWidth="1.4" strokeDasharray="5 3.5" strokeLinejoin="round"/>
-            <path d="M50 33 L50 67" stroke="#f8e7d6" strokeWidth="1.4" strokeDasharray="4 3" strokeLinecap="round"/>
+            <path d="M50 45 C9 -8 -7 14 15 43 C25 52 35 50 50 45 C20 52 23 88 42 70 Z" fill="#20f0ff" fillOpacity=".72" stroke="#40ffff" strokeWidth="1.4" strokeDasharray="5 3.5" strokeLinejoin="round"/>
+            <path d="M50 45 C91 -8 107 14 85 43 C75 52 65 50 50 45 C80 52 77 88 58 70 Z" fill="#c040ff" fillOpacity=".68" stroke="#e080ff" strokeWidth="1.4" strokeDasharray="5 3.5" strokeLinejoin="round"/>
+            <path d="M50 33 L50 67" stroke="#e0d0ff" strokeWidth="1.5" strokeDasharray="4 3" strokeLinecap="round"/>
           </g></svg>
         </g>
       </svg>
@@ -496,10 +534,10 @@ function Chapter({ id, number, eyebrow, title, accent, lede, children }) {
 }
 
 function Introduction() {
-  return <Chapter id="intro" number="01" eyebrow="The introduction" title="The person behind" accent="the systems." lede="I’ve built dashboards Directors approve budgets on, and AI systems that answer questions dashboards can’t.">
+  return <Chapter id="intro" number="01" eyebrow="The introduction" title="The person behind" accent="the systems." lede="I've built dashboards Directors approve budgets on, and AI systems that answer questions dashboards can't.">
     <div className="rich-copy">
       <p>I'm a data-driven problem solver who turns raw, messy information into decisions that matter. A recent Master's in Data Science graduate from Northeastern University (GPA: 3.8), I bring hands-on experience across the full data stack, from architecting ETL pipelines and building ML models to designing executive dashboards and deploying AI-powered applications.</p>
-      <p>At AstraZeneca / Alexion Pharmaceuticals, I reduced report load times by 60%, cut data pipeline errors by 75%, and shipped Agentic AI solutions that cut manual onboarding work in half. My background spans pharma analytics, Fortune 500 healthcare consulting, academic research, LLM fine-tuning, and cross-functional stakeholder communication.</p>
+      <p>At Alexion Pharmaceuticals, AstraZeneca, I reduced report load times by 60%, cut data pipeline errors by 75%, and shipped Agentic AI solutions that cut manual onboarding work in half. My background spans pharma analytics, Fortune 500 healthcare consulting, academic research, LLM fine-tuning, and cross-functional stakeholder communication.</p>
       <p>What sets me apart: I don't just analyze data. I engineer systems around it. Outside of data, I'm a people-first leader who has led teams, hired talent, and mentored students.</p>
     </div>
     <div className="impact-strip">{impactStats.map(s=><div key={s.label}><strong>{s.value}</strong><span>{s.label}</span></div>)}</div>
@@ -536,6 +574,55 @@ function Projects() {
 function ExperienceIllustration({ org }) {
   const uid = useId().replace(/:/g, '');
   const s = { width: '100%', height: '100%', display: 'block' };
+
+  if (org.includes('Humanitarians')) return (
+    <svg viewBox="0 0 800 180" preserveAspectRatio="xMidYMid slice" style={s} aria-hidden="true">
+      <defs>
+        <linearGradient id={`${uid}h1`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#c6a1f1" stopOpacity=".9"/><stop offset="1" stopColor="#74d9ec" stopOpacity=".8"/></linearGradient>
+        <linearGradient id={`${uid}h2`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#c6a1f1" stopOpacity=".6"/><stop offset="1" stopColor="#74d9ec" stopOpacity=".2"/></linearGradient>
+      </defs>
+      <rect width="800" height="180" fill="#07091a"/>
+      {/* subtle grid */}
+      {[36,72,108,144].map(y=><line key={y} x1="0" y1={y} x2="800" y2={y} stroke="#c6a1f1" strokeOpacity=".035" strokeWidth="1"/>)}
+      {[100,200,300,400,500,600,700].map(x=><line key={x} x1={x} y1="0" x2={x} y2="180" stroke="#c6a1f1" strokeOpacity=".03" strokeWidth="1"/>)}
+      {/* RL loop: Agent box left, Environment box right, curved reward/action arrows */}
+      <rect x="48" y="58" width="130" height="64" rx="8" fill="#0e0d28" stroke="#c6a1f1" strokeWidth="1.2" strokeOpacity=".7"/>
+      <text x="113" y="83" textAnchor="middle" fontSize="8.5" fontFamily="monospace" letterSpacing=".12em" fill="#c6a1f1" fillOpacity=".85">AGENT</text>
+      <text x="113" y="97" textAnchor="middle" fontSize="6.5" fontFamily="monospace" letterSpacing=".08em" fill="#c6a1f1" fillOpacity=".45">RL POLICY</text>
+      {/* inner agent pulse rings */}
+      <circle cx="113" cy="105" r="6" fill="none" stroke="#c6a1f1" strokeWidth="1" strokeOpacity=".35"/>
+      <circle cx="113" cy="105" r="3" fill="#c6a1f1" fillOpacity=".55"/>
+      <rect x="622" y="58" width="130" height="64" rx="8" fill="#0a1420" stroke="#74d9ec" strokeWidth="1.2" strokeOpacity=".7"/>
+      <text x="687" y="83" textAnchor="middle" fontSize="8.5" fontFamily="monospace" letterSpacing=".1em" fill="#74d9ec" fillOpacity=".85">ENVIRON.</text>
+      <text x="687" y="97" textAnchor="middle" fontSize="6.5" fontFamily="monospace" letterSpacing=".08em" fill="#74d9ec" fillOpacity=".45">DISEASE SIM</text>
+      <circle cx="687" cy="105" r="6" fill="none" stroke="#74d9ec" strokeWidth="1" strokeOpacity=".35"/>
+      <circle cx="687" cy="105" r="3" fill="#74d9ec" fillOpacity=".55"/>
+      {/* action arrow top (agent → env) */}
+      <path d="M178 72 Q400 20 622 72" fill="none" stroke={`url(#${uid}h1)`} strokeWidth="1.6" strokeOpacity=".7" markerEnd="none"/>
+      <polygon points="618,66 630,72 618,78" fill="#74d9ec" fillOpacity=".6"/>
+      <text x="400" y="26" textAnchor="middle" fontSize="7" fontFamily="monospace" letterSpacing=".12em" fill="#74d9ec" fillOpacity=".5">ACTION / TREATMENT</text>
+      {/* reward arrow bottom (env → agent) */}
+      <path d="M622 108 Q400 158 178 108" fill="none" stroke={`url(#${uid}h2)`} strokeWidth="1.6" strokeOpacity=".6"/>
+      <polygon points="182,102 170,108 182,114" fill="#c6a1f1" fillOpacity=".6"/>
+      <text x="400" y="170" textAnchor="middle" fontSize="7" fontFamily="monospace" letterSpacing=".12em" fill="#c6a1f1" fillOpacity=".5">REWARD / STATE SIGNAL</text>
+      {/* neural nodes in the middle — benchmark/eval cluster */}
+      {[[340,56],[400,38],[460,56],[370,90],[430,90],[400,118]].map(([x,y],i)=>(
+        <g key={i}>
+          <circle cx={x} cy={y} r="11" fill="#100b22" stroke="#c6a1f1" strokeWidth="1" strokeOpacity=".45"/>
+          <circle cx={x} cy={y} r="4" fill="#c6a1f1" fillOpacity=".55"/>
+        </g>
+      ))}
+      {/* edges between neural nodes */}
+      {[[340,56,400,38],[400,38,460,56],[340,56,370,90],[400,38,400,118],[460,56,430,90],[370,90,400,118],[430,90,400,118],[370,90,430,90]].map(([x1,y1,x2,y2],i)=>(
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#c6a1f1" strokeOpacity=".18" strokeWidth="1"/>
+      ))}
+      {/* scatter sparkles for data signals */}
+      {[[220,32],[265,145],[510,30],[555,148],[760,55],[30,145]].map(([x,y],i)=>(
+        <circle key={i} cx={x} cy={y} r="2.2" fill="#74d9ec" fillOpacity=".3"/>
+      ))}
+      <text x="60" y="12" fontSize="7" fontFamily="monospace" letterSpacing=".13em" fill="#c6a1f1" fillOpacity=".35">REINFORCEMENT LEARNING · HEALTHCARE AI · BENCHMARKING · AGENTIC WORKFLOWS</text>
+    </svg>
+  );
 
   if (org.includes('AstraZeneca')) return (
     <svg viewBox="0 0 800 180" preserveAspectRatio="xMidYMid slice" style={s} aria-hidden="true">
@@ -667,7 +754,9 @@ function Capabilities() {
 }
 
 function Connect({ mode, onContact }) {
-  return <Chapter id="connect" number="05" eyebrow="The destination" title={mode==='signal'?'The next destination?':'Great ideas begin'} accent={mode==='signal'?'Your team.':'with connection.'} lede={mode==='signal'?'I’d love to bring this mix of analytical thinking, practical AI and ownership to your team, and build work that makes a difference.':'Whether it starts with an interesting question, an ambitious idea or a new perspective, I’d love to explore where it could lead.'}>
+  const classicLede = "I\u2019d love to bring this mix of analytical thinking, practical AI and ownership to your team, and build work that makes a difference.";
+  const immersiveLede = "Whether it starts with an interesting question, an ambitious idea or a new perspective, I\u2019d love to explore where it could lead.";
+  return <Chapter id="connect" number="05" eyebrow="The destination" title={mode==='classic'?'The next destination?':'Great ideas begin'} accent={mode==='classic'?'Your team.':'with connection.'} lede={mode==='classic'?classicLede:immersiveLede}>
     <div className="destination-wrap">
       <div className="destination-actions"><button className="main-cta" onClick={onContact}>Let's Talk <ArrowUpRight size={17}/></button><div className="socials"><a href="https://www.linkedin.com/in/hiranmaidev/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={19}/></a><a href="https://github.com/Hiranmai28" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><Github size={19}/></a><a href="mailto:hiranmaid05@gmail.com" aria-label="Email"><Mail size={19}/></a></div></div>
     </div>
@@ -725,7 +814,7 @@ function ContactModal({ open, onClose }) {
 }
 
 export default function App() {
-  const [mode,setMode] = useState(() => { try {return localStorage.getItem('hiranmai-mode') === 'orbit' ? 'orbit' : 'signal'} catch {return 'signal'} });
+  const [mode,setMode] = useState(() => { try {return localStorage.getItem('hiranmai-mode') === 'immersive' ? 'immersive' : 'classic'} catch {return 'classic'} });
   const [contactOpen,setContactOpen] = useState(false);
   const { progress, active } = useScrollJourney();
   useEffect(() => { document.body.dataset.mode=mode; try {localStorage.setItem('hiranmai-mode',mode)} catch {} },[mode]);

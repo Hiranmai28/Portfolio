@@ -4,8 +4,15 @@
 export const careerPath = [
     {
       type: 'work',
+      title: 'AI Engineer, Analytics',
+      org: 'Humanitarians AI',
+      location: 'Remote',
+      period: 'Sept 2026 - Present',
+    },
+    {
+      type: 'work',
       title: 'Data Analyst & Product Coordinator',
-      org: 'AstraZeneca, Alexion Pharmaceuticals',
+      org: 'Alexion Pharmaceuticals, AstraZeneca',
       location: 'Boston, MA',
       period: 'Jul 2025 - Dec 2025',
     },
@@ -140,13 +147,15 @@ export const impactStats = [
 
 
 export const experienceNotes = {
-  'AstraZeneca, Alexion Pharmaceuticals': 'Worked across finance, operations, regulatory, risk and governance for a rare-disease portfolio. Created trusted reporting, improved data-quality workflows and explored practical AI agents in an enterprise setting.',
+  'Humanitarians AI': 'Building RL environments that simulate autoimmune disease progression for healthcare AI research. Designing agent benchmarking frameworks, agentic workflows on an internal platform, and technical case studies that communicate experimental findings.',
+  'Alexion Pharmaceuticals, AstraZeneca': 'Worked across finance, operations, regulatory, risk and governance for a rare-disease portfolio. Created trusted reporting, improved data-quality workflows and explored practical AI agents in an enterprise setting.',
   'Saxbys Cafe, Northeastern University': 'Led daily operations, coached teammates, supported scheduling and hiring, and learned how to make effective decisions under pressure.',
   'Northeastern University': 'Supported graduate students through teaching, experimental design, Python, R and statistical analysis, including work involving eye-tracking and cognitive styles.',
   'Turingminds.ai': 'Worked on applied analytics and machine learning, improving healthcare classification accuracy through feature engineering and evaluation.'
 };
 export const conceptImages = {
-  'AstraZeneca, Alexion Pharmaceuticals': 'astrazeneca.jpg',
+  'Humanitarians AI': 'humanitarians.jpg',
+  'Alexion Pharmaceuticals, AstraZeneca': 'astrazeneca.jpg',
   'Saxbys Cafe, Northeastern University': 'saxbys.jpg',
   'Northeastern University': 'northeastern.jpg',
   'Turingminds.ai': 'turingminds.jpg'

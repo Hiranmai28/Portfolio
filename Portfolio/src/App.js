@@ -1,0 +1,608 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Github, Linkedin, Mail, Phone, MapPin, ChevronDown, Menu, X,
+         User, Briefcase, Code2, Zap, Award, BookOpen } from 'lucide-react';
+
+export default function Portfolio() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled]     = useState(false);
+  const [particles, setParticles]   = useState([]);
+  const [svgLines, setSvgLines]     = useState([]);
+  const [openSection, setOpenSection] = useState(null); // Prezi zoom state
+
+  // Typewriter
+  const roles = ['Data Generalist', 'Analytics Engineer', 'AI Engineer'];
+  const [roleIndex, setRoleIndex]   = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [typePhase, setTypePhase]   = useState('typing');
+
+  // Counters
+  const [counters, setCounters] = useState({ technologies: 0, records: 0, dashboards: 0, automation: 0 });
+  const [countersStarted, setCountersStarted] = useState(false);
+  const numbersRef = useRef(null);
+
+  // Scroll handler
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', h);
+    return () => window.removeEventListener('scroll', h);
+  }, []);
+
+  // Lock body scroll when overlay is open
+  useEffect(() => {
+    document.body.style.overflow = openSection ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [openSection]);
+
+  // Particles + lines
+  useEffect(() => {
+    const p = Array.from({ length: 40 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100, y: Math.random() * 100,
+      size: Math.random() * 3 + 1,
+      duration: Math.random() * 3 + 2,
+      delay: Math.random() * 2,
+    }));
+    setParticles(p);
+    const lines = [];
+    for (let i = 0; i < p.length; i++)
+      for (let j = i + 1; j < p.length; j++) {
+        const dx = p[i].x - p[j].x, dy = p[i].y - p[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 15) lines.push({ id: `${i}-${j}`, x1: p[i].x, y1: p[i].y, x2: p[j].x, y2: p[j].y, opacity: (1 - d / 15) * 0.4 });
+      }
+    setSvgLines(lines);
+  }, []);
+
+  // Typewriter
+  useEffect(() => {
+    const current = roles[roleIndex];
+    if (typePhase === 'typing') {
+      if (displayText.length < current.length) {
+        const t = setTimeout(() => setDisplayText(current.slice(0, displayText.length + 1)), 80);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setTypePhase('deleting'), 2000);
+        return () => clearTimeout(t);
+      }
+    }
+    if (typePhase === 'deleting') {
+      if (displayText.length > 0) {
+        const t = setTimeout(() => setDisplayText(displayText.slice(0, -1)), 40);
+        return () => clearTimeout(t);
+      } else {
+        setRoleIndex(prev => (prev + 1) % roles.length);
+        setTypePhase('typing');
+      }
+    }
+  }, [displayText, typePhase, roleIndex]); // eslint-disable-line
+
+  // Counter observer
+  useEffect(() => {
+    if (!numbersRef.current) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting && !countersStarted) setCountersStarted(true); }, { threshold: 0.3 });
+    obs.observe(numbersRef.current);
+    return () => obs.disconnect();
+  }, [countersStarted]);
+
+  useEffect(() => {
+    if (!countersStarted) return;
+    const targets = { technologies: 20, records: 50, dashboards: 10, automation: 40 };
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      const ease = 1 - Math.pow(1 - step / 60, 3);
+      setCounters({ technologies: Math.round(targets.technologies * ease), records: Math.round(targets.records * ease), dashboards: Math.round(targets.dashboards * ease), automation: Math.round(targets.automation * ease) });
+      if (step >= 60) clearInterval(timer);
+    }, 30);
+    return () => clearInterval(timer);
+  }, [countersStarted]);
+
+  // ── Data ──────────────────────────────────────────────────────────────────────
+
+  const careerPath = [
+    {
+      type: 'work',
+      title: 'Data Analyst & Product Coordinator',
+      org: 'AstraZeneca, Alexion Pharmaceuticals',
+      location: 'Boston, MA',
+      period: 'Jul 2025 - Dec 2025',
+    },
+    {
+      type: 'work',
+      title: 'Team Lead & Talent Acquisition Specialist',
+      org: 'Saxbys Cafe, Northeastern University',
+      location: 'Boston, MA',
+      period: 'Aug 2024 - May 2026',
+    },
+    {
+      type: 'work',
+      title: 'Graduate Research & Teaching Assistant',
+      org: 'Northeastern University',
+      location: 'Boston, MA',
+      period: 'Aug 2024 - Apr 2025',
+    },
+    {
+      type: 'education',
+      title: "Master's in Data Science",
+      org: 'Northeastern University',
+      location: 'Boston, MA',
+      period: 'Jan 2024 - May 2026',
+      detail: 'GPA: 3.8 / 4.0',
+    },
+    {
+      type: 'work',
+      title: 'Data Science Intern & Analytics Specialist',
+      org: 'Turingminds.ai',
+      location: 'Hyderabad, IN',
+      period: 'Aug 2022 - Jun 2023',
+    },
+    {
+      type: 'education',
+      title: 'B.Tech, Electronics & Computer Engineering',
+      org: 'Sreenidhi Institute of Technology',
+      location: 'Hyderabad, IN',
+      period: 'Jul 2019 - Jul 2023',
+      detail: 'GPA: 4.0 / 4.0',
+    },
+  ];
+
+  const projects = [
+    {
+      title: 'NUBOT - Northeastern University',
+      description: 'End-to-end ETL pipeline with semantic search capabilities using RAG workflows',
+      tech: ['Python', 'Prefect', 'FAISS', 'Mistral LLM', 'LangChain', 'GCP', 'Docker'],
+      highlights: [
+        'Designed ETL pipeline processing unstructured documents into a FAISS vector database',
+        'Integrated Mistral LLM with LangChain for Retrieval-Augmented Generation (RAG)',
+        'Deployed to GCP with a CI/CD pipeline via GitHub Actions',
+      ],
+    },
+    {
+      title: 'Fine-Tuning LLAMA 2 with LoRA & QLoRA',
+      description: 'Fine-tuned LLAMA 2 on custom domain-specific datasets to optimize performance for specialized tasks',
+      tech: ['Python', 'LLAMA 2', 'LoRA', 'QLoRA', 'Hugging Face', 'GCP'],
+      highlights: [
+        'Fine-tuned large language models on domain-specific data, improving RAG response quality by 30%',
+        'Trained LLMs on robotic perception data, improving object recognition efficiency in warehouse environments',
+      ],
+    },
+    {
+      title: 'SavorSync - AI Recipe Platform',
+      description: 'Full-stack platform providing culturally personalized healthy recipes using an AI-powered chatbot',
+      tech: ['Python', 'GPT-3.5', 'Tableau', 'RAG', 'Full-Stack Development'],
+      highlights: [
+        'Conducted user research with 50+ participants; built Tableau dashboards to visualize dietary patterns',
+        'Built multilingual AI chatbot using GPT-3.5 for personalized recipe recommendations',
+        'Implemented RAG workflows for contextual, culturally-aware recipe generation',
+      ],
+    },
+    {
+      title: 'Healthcare Benefits Navigator',
+      description: 'Interactive healthcare plan explorer with natural language search and RAG-powered contextual answers over 50,000+ plan records.',
+      tech: ['Python', 'SQL', 'FAISS', 'Streamlit', 'RAG', 'Data Validation'],
+      highlights: [
+        'Built data pipelines across 50,000+ healthcare plan records with validation layers that caught quality issues at ingestion',
+        'Deployed as an interactive Streamlit application for real-time plan exploration and comparison',
+        'Ran multiple rounds of usability testing, reaching 89% user satisfaction and informing schema and validation improvements across iterations',
+        ],
+    },
+    {
+      title: 'Multiple Disease Prediction (ML)',
+      description: 'Real-time health risk prediction tool using ML models to classify multiple diseases',
+      tech: ['Python', 'Scikit-learn', 'Streamlit', 'EDA', 'Machine Learning'],
+      highlights: [
+        'Performed EDA on medical datasets to optimize feature selection for risk classification',
+        'Evaluated multiple ML models using accuracy and F1 score; tuned for real-world health applications',
+        'Deployed an interactive Streamlit tool for real-time disease risk prediction',
+      ],
+    },
+    {
+      title: 'Autism Spectrum Disorder Prediction',
+      description: 'Predictive model for ASD using comprehensive survey data and statistical ML',
+      tech: ['R', 'Logistic Regression', 'Statistical Analysis', 'Cross-validation'],
+      highlights: [
+        'Built Logistic Regression model with cross-validation for ASD classification',
+        'Performed EDA and tuned model hyperparameters to improve diagnostic precision',
+        'Published findings in IJNRD: "Autism Spectrum Disorder Detection using Deep Learning"',
+      ],
+    },
+  ];
+
+  const skills = {
+  'AI & LLMs':            { items: ['LLMs', 'RAG', 'MCP', 'Prompt Engineering', 'Agent Orchestration', 'LLM Evaluation', 'Microsoft Copilot Studio', 'LangGraph', 'FAISS', 'Mistral', 'LoRA', 'QLoRA'], color: 'from-fuchsia-500 to-violet-600' },
+  'Machine Learning':     { items: ['Supervised & Unsupervised Learning', 'Classification', 'NLP', 'Transformers', 'Scikit-learn', 'TensorFlow', 'PyTorch', 'Feature Engineering', 'Model Evaluation', 'LLAMA 2 Fine-Tuning'], color: 'from-violet-500 to-purple-700' },
+  'Programming':          { items: ['Python', 'SQL', 'R', 'JavaScript'], color: 'from-violet-500 to-violet-700' },
+  'Data Engineering':     { items: ['ETL/ELT Pipelines', 'Snowflake', 'Databricks', 'dbt', 'Microsoft Fabric', 'Airflow', 'Prefect', 'Alteryx', 'Data Modeling', 'Data Governance'], color: 'from-cyan-500 to-cyan-700' },
+  'Data Analysis':        { items: ['Statistical Testing', 'A/B Testing', 'Regression Analysis', 'Pandas', 'NumPy', 'Advanced Excel'], color: 'from-cyan-400 to-violet-500' },
+  'Visualization & BI':   { items: ['Power BI', 'Tableau', 'Looker', 'Spotfire', 'DAX', 'Seaborn', 'Matplotlib', 'Plotly'], color: 'from-violet-400 to-purple-600' },
+  'Cloud & DevOps':       { items: ['AWS', 'GCP', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions'], color: 'from-sky-400 to-cyan-600' },
+  'AI Dev Tools':         { items: ['Claude Code', 'Cursor', 'GitHub Copilot', 'ChatGPT'], color: 'from-amber-400 to-orange-600' },
+};
+
+  const certifications = [
+    { title: 'Snowflake Data Warehousing Badge', issuer: 'Snowflake' },
+    { title: 'AstraZeneca Thriving in AI Programme 2025', issuer: 'AstraZeneca · Platinum' },
+    { title: 'Alteryx Machine Learning Micro-Credential', issuer: 'Alteryx' },
+    { title: 'Oracle Cloud Infrastructure 2024 Generative AI Professional', issuer: 'Oracle' },
+    { title: 'AICTE AWS Data Analytics Virtual Internship', issuer: 'AWS / AICTE' },
+    { title: 'Autism Spectrum Disorder Detection using Deep Learning', issuer: 'IJNRD · Research Publication' },
+    { title: 'Data Transformation with Spark SQL in Databricks', issuer: 'Databricks' },
+  ];
+
+  const impactStats = [
+    { value: '2+', label: 'Years Experience' },
+    { value: '10+', label: 'Projects Built' },
+    { value: '6+', label: 'Certifications' },
+    { value: 'F500', label: 'Clients Served' },
+  ];
+
+  const counterCards = [
+  { key: 'technologies',   label: 'Technologies',       suffix: '+',  fmt: v => v },
+  { key: 'records',        label: 'Records Processed',  suffix: 'K+', fmt: v => v },
+  { key: 'dashboards',     label: 'Dashboards Shipped', suffix: '+',  fmt: v => v },
+  { key: 'automation',     label: 'Work Automated',     suffix: '%',  fmt: v => v },
+];
+
+  // Prezi section cards (the "overview" cards)
+  const sectionCards = [
+    { id: 'about',    title: 'About Me',     tagline: 'Who I am & what drives me',           icon: <User size={32} className="text-cyan-400" /> },
+    { id: 'career',   title: 'Career Path',  tagline: 'Education + experience, one timeline', icon: <Briefcase size={32} className="text-violet-400" /> },
+    { id: 'projects', title: 'Projects',     tagline: "What I've built with data & AI",       icon: <Code2 size={32} className="text-fuchsia-400" /> },
+    { id: 'skills',   title: 'Skills',       tagline: 'My full technical toolkit',            icon: <Zap size={32} className="text-sky-400" /> },
+    { id: 'certifications', title: 'Certifications', tagline: 'Credentials & publications',  icon: <Award size={32} className="text-amber-400" /> },
+    { id: 'contact',  title: 'Contact',      tagline: "Let's work together",                  icon: <Mail size={32} className="text-cyan-400" /> },
+  ];
+
+  // ── Section renderers ─────────────────────────────────────────────────────────
+
+  const renderAbout = () => (
+    <div className="max-w-4xl mx-auto px-6 py-16">
+      <h2 className="text-4xl md:text-5xl font-extrabold mb-10">About <span className="gradient-text">Me</span></h2>
+      <div className="space-y-6 text-lg text-gray-300 leading-relaxed">
+        <p>
+        I'm a data-driven problem solver who turns raw, messy information into decisions that matter. A recent
+        <span className="text-cyan-400 font-semibold"> Master's in Data Science graduate from Northeastern University</span> (GPA: 3.8),
+        I bring hands-on experience across the full data stack, from architecting ETL pipelines and building ML models to
+        designing executive dashboards and deploying AI-powered applications.
+      </p>
+      <p>
+        At <span className="text-violet-400 font-semibold">AstraZeneca / Alexion Pharmaceuticals</span>, I reduced report load times
+        by 60%, cut data pipeline errors by 75%, and shipped Agentic AI solutions that cut manual onboarding work in half.
+        My background spans pharma analytics, Fortune 500 healthcare consulting, academic research, LLM fine-tuning, and
+        cross-functional stakeholder communication, so I'm equally comfortable in the weeds of a SQL query and in the boardroom
+        presenting findings.
+      </p>
+      <p>
+        What sets me apart: I don't just <em>analyze</em> data. I <em>engineer systems around it</em>. Whether it's fine-tuning
+        LLMs with LoRA and QLoRA, building RAG pipelines with LangChain and FAISS, or designing LLM evaluation frameworks that
+        validate outputs against source data, I show up with curiosity, precision, and a bias for measurable impact.
+      </p>
+      <p>
+        Outside of data, I'm a people-first leader. I've led teams, hired talent, and mentored students, which means I bring
+        both technical depth and the communication skills to translate it for any audience.
+      </p>
+      </div>
+    </div>
+  );
+
+  const renderCareer = () => {
+    const eduItems  = careerPath.filter(i => i.type === 'education');
+    const workItems = careerPath.filter(i => i.type === 'work');
+    const TimelineItem = ({ item, color }) => (
+      <div className="relative pl-12 mb-8">
+        <div className={`absolute left-0 top-1 w-9 h-9 rounded-full flex items-center justify-center border-2 bg-slate-900 ${color === 'violet' ? 'border-violet-400' : 'border-cyan-400'}`}>
+          {color === 'violet'
+            ? <BookOpen size={15} className="text-violet-400" />
+            : <Briefcase size={15} className="text-cyan-400" />}
+        </div>
+        <div className={`rounded-xl p-5 border ${color === 'violet' ? 'bg-violet-900/20 border-violet-700/40' : 'bg-slate-800/50 border-slate-700/40'}`}>
+          <span className={`text-xs font-bold tracking-widest uppercase ${color === 'violet' ? 'text-violet-400' : 'text-cyan-400'}`}>{item.period}</span>
+          <h4 className="text-base font-bold text-white mt-1">{item.title}</h4>
+          <p className="text-gray-400 text-sm mt-0.5">{item.org}</p>
+          <p className="text-gray-500 text-xs mt-0.5">{item.location}</p>
+          {item.detail && <p className="text-gray-500 text-xs mt-1">{item.detail}</p>}
+        </div>
+      </div>
+    );
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-16">
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Career <span className="gradient-text">Path</span></h2>
+        <p className="text-gray-400 mb-12">Education on the left, experience on the right.</p>
+        <div className="grid md:grid-cols-2 gap-10">
+          {/* Education column */}
+          <div>
+            <h3 className="text-lg font-bold text-violet-400 uppercase tracking-widest mb-8 flex items-center gap-2">
+              <BookOpen size={18} /> Education
+            </h3>
+            <div className="relative">
+              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-violet-500/70 to-transparent"></div>
+              {eduItems.map((item, i) => <TimelineItem key={i} item={item} color="violet" />)}
+            </div>
+          </div>
+          {/* Work column */}
+          <div>
+            <h3 className="text-lg font-bold text-cyan-400 uppercase tracking-widest mb-8 flex items-center gap-2">
+              <Briefcase size={18} /> Experience
+            </h3>
+            <div className="relative">
+              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-500/70 to-transparent"></div>
+              {workItems.map((item, i) => <TimelineItem key={i} item={item} color="cyan" />)}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderProjects = () => (
+    <div className="max-w-5xl mx-auto px-6 py-16">
+      <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Featured <span className="gradient-text">Projects</span></h2>
+      <p className="text-gray-400 mb-12">Things I've built at the intersection of data, AI, and real-world problems.</p>
+      <div className="grid md:grid-cols-2 gap-6">
+        {projects.map((p, i) => (
+          <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl p-7 shadow-xl border border-slate-700/40 flex flex-col">
+            <h4 className="text-lg font-bold gradient-text mb-2 leading-snug">{p.title}</h4>
+            <p className="text-gray-300 text-sm mb-4 leading-relaxed">{p.description}</p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {p.tech.map((t, j) => (
+                <span key={j} className="px-3 py-1 bg-slate-700/70 text-cyan-300 rounded-full text-xs border border-slate-600/50">{t}</span>
+              ))}
+            </div>
+            <ul className="space-y-2 text-gray-300 text-sm mt-auto">
+              {p.highlights.map((h, j) => (
+                <li key={j} className="flex items-start gap-2">
+                  <span className="text-violet-400 flex-shrink-0 mt-0.5">▹</span>
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderSkills = () => (
+  <div className="max-w-5xl mx-auto px-6 py-16">
+    <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Skills & <span className="gradient-text">Expertise</span></h2>       
+    <p className="text-gray-400 mb-12">My technical toolkit, built across industry, research, and personal projects. Sharpened by two years leading teams, running talent acquisition, and presenting to Director and VP audiences, so the technical work always lands with the people who depend on it.</p>    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Object.entries(skills).map(([cat, data], i) => (
+        <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl border border-slate-700/40 flex flex-col">
+          <div className={`bg-gradient-to-r ${data.color} px-6 py-4`}>
+            <h4 className="font-bold text-white text-sm tracking-wide">{cat}</h4>
+          </div>
+          <div className="p-6 flex-1">
+            <div className="flex flex-wrap gap-2">
+              {data.items.map((s, j) => (
+                <span key={j} className="px-3 py-1 bg-slate-700/70 text-gray-200 rounded-full text-xs border border-slate-600/40">{s}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+  const renderCertifications = () => (
+    <div className="max-w-3xl mx-auto px-6 py-16">
+      <h2 className="text-4xl md:text-5xl font-extrabold mb-4"><span className="gradient-text">Certifications</span> & Publications</h2>
+      <p className="text-gray-400 mb-12">Credentials that validate what I bring to the table.</p>
+      <div className="space-y-4">
+        {certifications.map((c, i) => (
+          <div key={i} className="card-hover flex items-start gap-5 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/40 shadow-xl">
+            <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center flex-shrink-0">
+              <Award size={18} className="text-amber-400" />
+            </div>
+            <div>
+              <p className="font-semibold text-white">{c.title}</p>
+              <p className="text-sm text-gray-400 mt-0.5">{c.issuer}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderContact = () => (
+    <div className="max-w-3xl mx-auto px-6 py-16 text-center">
+      <h2 className="text-4xl md:text-5xl font-extrabold mb-4">Get In <span className="gradient-text">Touch</span></h2>
+      <p className="text-xl text-gray-300 mb-12 leading-relaxed">
+        Open to new opportunities, collaborations, and conversations. Let's build something impactful together.
+      </p>
+      <div className="grid md:grid-cols-3 gap-6 mb-12">
+        {[
+          { icon: <Mail className="mx-auto mb-3 text-cyan-400" size={36} />, label: 'Email', content: <a href="mailto:hiranmaid05@gmail.com" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors break-all">hiranmaid05@gmail.com</a> },
+          { icon: <Phone className="mx-auto mb-3 text-violet-400" size={36} />, label: 'Phone', content: <a href="tel:+18573435158" className="text-gray-400 hover:text-violet-400 text-sm transition-colors">+1 857-343-5158</a> },
+          { icon: <MapPin className="mx-auto mb-3 text-fuchsia-400" size={36} />, label: 'Location', content: <p className="text-gray-400 text-sm">Boston, MA<br />Open to Relocation</p> },
+        ].map((item, i) => (
+          <div key={i} className="card-hover bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/40 shadow-xl">
+            {item.icon}
+            <h4 className="font-semibold mb-2 text-white">{item.label}</h4>
+            {item.content}
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-center space-x-4">
+        <a href="https://www.linkedin.com/in/hiranmaidev/" target="_blank" rel="noopener noreferrer"
+           className="px-7 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 rounded-xl transition-all hover:scale-105 flex items-center gap-2 text-sm font-semibold shadow-lg shadow-cyan-500/20">
+          <Linkedin size={20} /> LinkedIn
+        </a>
+        <a href="https://github.com/Hiranmai28" target="_blank" rel="noopener noreferrer"
+           className="px-7 py-3 bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 rounded-xl transition-all hover:scale-105 flex items-center gap-2 text-sm font-semibold shadow-lg shadow-violet-500/20">
+          <Github size={20} /> GitHub
+        </a>
+      </div>
+    </div>
+  );
+
+  const sectionContent = { about: renderAbout, career: renderCareer, projects: renderProjects, skills: renderSkills, certifications: renderCertifications, contact: renderContact };
+
+  // ── Render ────────────────────────────────────────────────────────────────────
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-gray-100 relative overflow-hidden">
+
+      <style>{`
+        @keyframes float    { 0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-20px) translateX(10px)} }
+        @keyframes twinkle  { 0%,100%{opacity:0.25}50%{opacity:0.9} }
+        @keyframes fade-in  { from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)} }
+        @keyframes cursor-blink { 0%,100%{opacity:1}50%{opacity:0} }
+        @keyframes zoom-in  { from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)} }
+        .animate-fade-in    { animation: fade-in 1s ease-out both; }
+        .delay-200 { animation-delay:.2s } .delay-400 { animation-delay:.4s } .delay-600 { animation-delay:.6s }
+        .cursor-blink { display:inline-block; animation: cursor-blink 1s step-end infinite; }
+        .gradient-text { background:linear-gradient(90deg,#22d3ee,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .card-hover { transition:transform .2s ease,box-shadow .2s ease; }
+        .card-hover:hover { transform:translateY(-4px);box-shadow:0 20px 40px -8px rgba(34,211,238,0.15); }
+        .zoom-in { animation: zoom-in 0.35s cubic-bezier(0.16,1,0.3,1) both; }
+        .prezi-card { transition: transform .25s ease, box-shadow .25s ease; cursor: pointer; }
+        .prezi-card:hover { transform: scale(1.04); box-shadow: 0 24px 48px -8px rgba(139,92,246,0.25); }
+      `}</style>
+
+      {/* SVG Network Background */}
+      <svg className="fixed inset-0 w-full h-full pointer-events-none z-0">
+        {svgLines.map(l => <line key={l.id} x1={`${l.x1}%`} y1={`${l.y1}%`} x2={`${l.x2}%`} y2={`${l.y2}%`} stroke="#22d3ee" strokeWidth="0.5" opacity={l.opacity} />)}
+      </svg>
+
+      {/* Particles */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {particles.map(p => (
+          <div key={p.id} className="absolute rounded-full" style={{ left:`${p.x}%`, top:`${p.y}%`, width:`${p.size}px`, height:`${p.size}px`, background: p.id % 3 === 0 ? '#8b5cf6' : '#22d3ee', animation:`float ${p.duration}s ease-in-out infinite ${p.delay}s, twinkle ${p.duration*1.5}s ease-in-out infinite ${p.delay}s` }} />
+        ))}
+      </div>
+
+      {/* Navigation */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/95 backdrop-blur-sm shadow-lg border-b border-slate-700/50' : 'bg-transparent'}`}>
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold gradient-text">Hiranmai Devarasetty</h1>
+          <div className="hidden md:flex space-x-6">
+            {sectionCards.map(s => (
+              <button key={s.id} onClick={() => setOpenSection(s.id)}
+                className="text-sm font-medium tracking-wide hover:text-cyan-400 transition-colors text-gray-300 capitalize">
+                {s.title}
+              </button>
+            ))}
+          </div>
+          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
+        {isMenuOpen && (
+          <div className="md:hidden bg-slate-900/95 backdrop-blur-sm border-t border-slate-700/50">
+            <div className="px-6 py-4 space-y-4">
+              {sectionCards.map(s => (
+                <button key={s.id} onClick={() => { setOpenSection(s.id); setIsMenuOpen(false); }}
+                  className="block w-full text-left capitalize hover:text-cyan-400 transition-colors">{s.title}</button>
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero */}
+      <section id="home" className="min-h-screen flex items-center justify-center px-6 relative z-10">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="animate-fade-in text-lg text-gray-400 mb-3 tracking-widest uppercase font-medium">Hi! I'm Hiranmai.</p>
+          <h1 className="animate-fade-in delay-200 text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-tight min-h-[1.2em]">
+            <span className="gradient-text">{displayText}</span>
+            <span className="cursor-blink text-cyan-400">|</span>
+          </h1>
+          <p className="animate-fade-in delay-400 text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+          From AI agents to executive dashboards. Systems that ship to production, not slides that sit in decks.
+          </p>
+          <div className="animate-fade-in delay-600 grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 max-w-2xl mx-auto">
+            {impactStats.map((stat, i) => (
+              <div key={i} className="bg-slate-800/60 backdrop-blur-sm rounded-lg px-4 py-3 border border-slate-700/50">
+                <p className="text-2xl md:text-3xl font-extrabold text-cyan-400">{stat.value}</p>
+                <p className="text-xs text-gray-400 mt-0.5 tracking-wide">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center space-x-5 mb-12">
+            <a href="https://www.linkedin.com/in/hiranmaidev/" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/70 hover:bg-cyan-500 border border-slate-700 hover:border-cyan-500 rounded-full transition-all hover:scale-110"><Linkedin size={24} /></a>
+            <a href="https://github.com/Hiranmai28" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/70 hover:bg-violet-600 border border-slate-700 hover:border-violet-500 rounded-full transition-all hover:scale-110"><Github size={24} /></a>
+            <a href="mailto:hiranmaid05@gmail.com" className="p-3 bg-slate-800/70 hover:bg-cyan-500 border border-slate-700 hover:border-cyan-500 rounded-full transition-all hover:scale-110"><Mail size={24} /></a>
+          </div>
+          <button onClick={() => { const el = document.getElementById('numbers'); el && el.scrollIntoView({ behavior: 'smooth' }); }} className="animate-bounce">
+            <ChevronDown size={36} className="text-cyan-400" />
+          </button>
+        </div>
+      </section>
+
+      {/* By The Numbers */}
+      <section id="numbers" className="py-24 px-6 relative z-10 bg-slate-900/80 backdrop-blur-sm border-y border-slate-700/50" ref={numbersRef}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-center text-sm uppercase tracking-widest text-violet-400 font-semibold mb-3">Impact at a Glance</h2>
+          <h3 className="text-center text-4xl md:text-5xl font-extrabold gradient-text mb-14">By The Numbers</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {counterCards.map(({ key, label, suffix, fmt }) => (
+              <div key={key} className="card-hover bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/60 rounded-2xl p-8 text-center shadow-xl">
+                <p className="text-5xl md:text-6xl font-extrabold gradient-text mb-2">{fmt(counters[key])}{suffix}</p>
+                <p className="text-gray-400 text-sm tracking-wide uppercase">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Prezi Overview — Explore Section */}
+      <section id="explore" className="py-24 px-6 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-center text-sm uppercase tracking-widest text-cyan-400 font-semibold mb-3">Explore</h2>
+          <h3 className="text-center text-4xl md:text-5xl font-extrabold mb-4">
+            Dive <span className="gradient-text">Deeper</span>
+          </h3>
+          <p className="text-center text-gray-400 mb-14 max-w-xl mx-auto">Click any card to zoom in and explore the full content.</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {sectionCards.map(card => (
+              <button
+                key={card.id}
+                onClick={() => setOpenSection(card.id)}
+                className="prezi-card text-left bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/40 shadow-xl hover:border-cyan-500/40"
+              >
+                <div className="mb-4">{card.icon}</div>
+                <h4 className="text-lg font-bold text-white mb-1">{card.title}</h4>
+                <p className="text-sm text-gray-400 leading-relaxed">{card.tagline}</p>
+                <div className="mt-4 text-xs text-cyan-400 font-semibold tracking-wide uppercase flex items-center gap-1">
+                  Explore →
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 border-t border-slate-700/50 py-6 text-center text-gray-500 text-sm relative z-10">
+        <p>© 2026 <span className="gradient-text font-semibold">Hiranmai Devarasetty</span>. The best data story is the one we haven't told yet. Let's write it together.</p>
+      </footer>
+
+      {/* ── Prezi Zoom Overlay ──────────────────────────────────────────────── */}
+      {openSection && (
+        <div className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-y-auto zoom-in">
+          {/* Sticky close bar */}
+          <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700/50 px-6 py-4 flex items-center justify-between">
+            <button
+              onClick={() => setOpenSection(null)}
+              className="flex items-center gap-2 text-sm text-gray-400 hover:text-cyan-400 transition-colors font-medium"
+            >
+              <X size={16} /> Close
+            </button>
+            <div className="flex gap-2">
+              {sectionCards.map(s => (
+                <button key={s.id} onClick={() => setOpenSection(s.id)}
+                  className={`text-xs px-3 py-1.5 rounded-full transition-colors font-medium ${openSection === s.id ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40' : 'text-gray-500 hover:text-gray-300'}`}>
+                  {s.title}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Section content */}
+          <div className="relative z-10">
+            {sectionContent[openSection]?.()}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
